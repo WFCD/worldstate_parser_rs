@@ -24,6 +24,8 @@ pub struct Fissure {
     pub mission_type: MissionType,
 
     pub tier: Tier,
+
+    pub is_steel_path: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -47,6 +49,9 @@ pub struct FissureUnmapped {
     pub mission_type: MissionType,
 
     pub modifier: Tier,
+
+    #[serde(default)]
+    pub hard: bool,
 }
 
 impl FissureUnmapped {
@@ -60,6 +65,7 @@ impl FissureUnmapped {
             node,
             mission_type,
             modifier,
+            hard,
         } = self;
 
         let node = export
@@ -77,6 +83,7 @@ impl FissureUnmapped {
             mission_type,
             tier: modifier,
             node,
+            is_steel_path: hard,
         })
     }
 }
