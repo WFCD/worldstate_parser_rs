@@ -1,6 +1,6 @@
 use std::{collections::HashMap, str::FromStr};
 
-use crate::region::Region;
+use crate::manifest_entries::region::RegionManifestEntry;
 
 #[derive(Debug)]
 pub struct PublicExportIndex {
@@ -63,25 +63,26 @@ impl FromStr for PublicExportIndex {
 }
 
 all_the_exports! {
-    export_regions: Region,
+    struct ExportRegions(RegionManifestEntry),
 }
 
 macro_rules! all_the_exports {
     (
-        $( $ident:ident: $inner_type:ty ),*,
+        $( struct $ident:ident( $inner_type:ty ) ),*,
     ) => {
         paste::paste! {
             $(
-                #[derive(Debug, serde::Deserialize)]
+                #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
                 #[serde(rename_all = "PascalCase")]
-                pub struct [< $ident:camel >] {
-                    pub $ident: Vec<$inner_type>,
+                pub struct $ident {
+                    pub [<$ident:snake>]: Vec<$inner_type>,
                 }
             )*
 
+            #[derive(Clone, serde::Serialize, serde::Deserialize)]
             pub struct Exports {
                 $(
-                    pub $ident: [< $ident:camel >]
+                    pub [<$ident:snake>]: $ident
                 )*,
             }
         }

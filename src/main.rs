@@ -1,20 +1,36 @@
 pub mod core;
-pub mod fissure;
+pub mod custom_maps;
+pub mod manifest_entries;
 pub mod manifests;
-pub mod model;
-pub mod region;
 pub mod world_state;
+pub mod worldstate_model;
 
-use std::error::Error;
+use std::{error::Error, fs, path::Path};
 
 use reqwest::blocking::get;
+use serde::de::DeserializeOwned;
 
-use crate::{
-    manifests::{ExportRegions, Exports},
-    world_state::WorldStateUnmapped,
-};
+use crate::{manifests::Exports, world_state::WorldStateUnmapped};
 
 type BoxDynError = Box<dyn Error>;
+
+fn get_from_cache_or_fetch<T: DeserializeOwned>(manifest: &str) -> Result<T, BoxDynError> {
+    let path = Path::new("./cache").join(manifest).with_extension("json");
+
+    if let Ok(cached) = fs::read_to_string(&path) {
+        return Ok(serde_json::from_str(&cached)?);
+    }
+
+    let item_json = get(format!(
+        "http://content.warframe.com/PublicExport/Manifest/{}",
+        manifest
+    ))?
+    .text()?;
+
+    fs::write(path, &item_json)?;
+
+    Ok(serde_json::from_str(&item_json)?)
+}
 
 fn get_export() -> Result<Exports, BoxDynError> {
     let file = get("https://origin.warframe.com/PublicExport/index_en.txt.lzma")?
@@ -29,23 +45,26 @@ fn get_export() -> Result<Exports, BoxDynError> {
 
     let export: manifests::PublicExportIndex = data.parse()?;
 
-    Ok(Exports {
-        export_regions: get(format!(
-            "http://content.warframe.com/PublicExport/Manifest/{}",
-            export.regions
-        ))?
-        .json::<ExportRegions>()?,
-    })
+    let exports = Exports {
+        export_regions: get_from_cache_or_fetch(&export.regions)?,
+    };
+
+    Ok(exports)
 }
 
 fn main() -> Result<(), BoxDynError> {
     let exports = get_export()?;
 
-    let fissures = get("https://api.warframe.com/cdn/worldState.php")?
-        .json::<WorldStateUnmapped>()?
-        .map(exports);
+    // let fissures = get("https://api.warframe.com/cdn/worldState.php")?
+    //     .json::<WorldStateUnmapped>()?
+    //     .map_worldstate(exports)
+    //     .ok_or("Failed to map worldstate")?;
+    let fissures =
+        serde_json::from_str::<WorldStateUnmapped>(&fs::read_to_string("worldstate.json")?)?
+            .map_worldstate(exports)
+            .ok_or("Failed to map worldstate")?;
 
-    println!("{fissures:#?}");
+    fs::write("fissures.json", serde_json::to_string_pretty(&fissures)?)?;
 
     Ok(())
 }

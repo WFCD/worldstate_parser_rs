@@ -1,2 +1,5 @@
 /target
 /.vscode/
+/worldstate.json
+/fissures.json
+/cache/
