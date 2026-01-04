@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
-#[serde(rename_all = "PascalCase")]
+#[serde(rename_all = "camelCase")]
 pub struct Alert {
     pub id: String,
 
