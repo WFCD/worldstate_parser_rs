@@ -58,19 +58,22 @@ pub enum WorldstateFaction {
     Sentient,
     #[serde(rename = "FC_TECHROT")]
     Techrot,
+    #[serde(rename = "FC_OROKIN")]
+    Orokin,
 }
 
 impl From<WorldstateFaction> for Faction {
     fn from(value: WorldstateFaction) -> Self {
         match value {
             WorldstateFaction::Corpus => Self::Corpus,
-            WorldstateFaction::Corrupted => Self::Corrupted,
+            WorldstateFaction::Corrupted => Self::Orokin,
             WorldstateFaction::Grineer => Self::Grineer,
             WorldstateFaction::Infestation => Self::Infested,
             WorldstateFaction::TheMurmur => Self::Murmur,
             WorldstateFaction::Scaldra => Self::Scaldra,
             WorldstateFaction::Sentient => Self::Sentient,
             WorldstateFaction::Techrot => Self::Techrot,
+            WorldstateFaction::Orokin => Self::Orokin,
         }
     }
 }
@@ -133,13 +136,9 @@ pub enum WorldstateMissionType {
     VoidCascade,
 }
 
-pub struct NotFound;
-
-impl TryFrom<WorldstateMissionType> for MissionType {
-    type Error = NotFound;
-
-    fn try_from(value: WorldstateMissionType) -> Result<Self, Self::Error> {
-        Ok(match value {
+impl From<WorldstateMissionType> for MissionType {
+    fn from(value: WorldstateMissionType) -> Self {
+        match value {
             WorldstateMissionType::Rathuum => Self::Rathuum,
             WorldstateMissionType::VoidArmageddon => Self::VoidArmaggedon,
             WorldstateMissionType::Disruption => Self::Disruption,
@@ -147,10 +146,8 @@ impl TryFrom<WorldstateMissionType> for MissionType {
             WorldstateMissionType::Assassination => Self::Assassination,
             WorldstateMissionType::Capture => Self::Capture,
             WorldstateMissionType::VoidFlood => Self::VoidFlood,
-            WorldstateMissionType::Unknown => return Err(NotFound),
             WorldstateMissionType::Defense => Self::Defense,
             WorldstateMissionType::LegacyteHarvest => Self::LegacyteHarvest,
-            WorldstateMissionType::SanctuaryOnslaught => return Err(NotFound),
             WorldstateMissionType::Defection => Self::Defection,
             WorldstateMissionType::Excavation => Self::Excavation,
             WorldstateMissionType::Exterminate => Self::Exterminate,
@@ -159,7 +156,6 @@ impl TryFrom<WorldstateMissionType> for MissionType {
             WorldstateMissionType::Landscape => Self::Landscape,
             WorldstateMissionType::MobileDefense => Self::MobileDefense,
             WorldstateMissionType::InfestedSalvage => Self::InfestedSalvage,
-            WorldstateMissionType::Conclave => return Err(NotFound),
             WorldstateMissionType::Rush => Self::Rush,
             WorldstateMissionType::Rescue => Self::Rescue,
             WorldstateMissionType::Hijack => Self::Hijack,
@@ -167,6 +163,7 @@ impl TryFrom<WorldstateMissionType> for MissionType {
             WorldstateMissionType::Survival => Self::Survival,
             WorldstateMissionType::Interception => Self::Interception,
             WorldstateMissionType::VoidCascade => Self::VoidCascade,
-        })
+            _ => Self::Unknown,
+        }
     }
 }

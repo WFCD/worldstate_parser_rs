@@ -47,6 +47,8 @@ pub enum MissionType {
     Descendia = 43,
     /// The Missions from the Perita Rebellion
     Recall = 44,
+
+    Unknown = 255,
 }
 
 #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, PartialEq, Eq)]

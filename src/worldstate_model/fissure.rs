@@ -1,13 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    core::Mappable,
-    custom_maps::{CustomMaps, solnode_to_region::Region},
-    manifests::Exports,
-    worldstate_data::WorldstateData,
-    worldstate_model::{Id, deserialize_mongo_date},
-};
+use crate::custom_maps::solnode_to_region::Region;
 
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum Tier {
@@ -29,7 +23,7 @@ pub enum Tier {
 pub struct Fissure {
     pub id: String,
 
-    pub region: Region,
+    pub region: Option<Region>,
 
     pub seed: usize,
 
@@ -42,54 +36,59 @@ pub struct Fissure {
     pub is_steel_path: bool,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct FissureUnmapped {
-    #[serde(rename = "_id")]
-    pub id: Id,
+pub(crate) mod unmapped {
+    use chrono::{DateTime, Utc};
+    use serde::{Deserialize, Serialize};
 
-    pub seed: usize,
+    use crate::{
+        core::{Context, Resolve, SolNode},
+        worldstate_model::{
+            Id,
+            deserialize_mongo_date,
+            fissure::{Fissure, Tier},
+        },
+    };
+    #[derive(Debug, Clone, Deserialize, Serialize)]
+    #[serde(rename_all = "PascalCase")]
+    pub(crate) struct FissureUnmapped {
+        #[serde(rename = "_id")]
+        pub id: Id,
 
-    pub node: String,
+        pub seed: usize,
 
-    #[serde(deserialize_with = "deserialize_mongo_date")]
-    pub activation: DateTime<Utc>,
+        pub node: SolNode,
 
-    #[serde(deserialize_with = "deserialize_mongo_date")]
-    pub expiry: DateTime<Utc>,
+        #[serde(deserialize_with = "deserialize_mongo_date")]
+        pub activation: DateTime<Utc>,
 
-    pub modifier: Tier,
+        #[serde(deserialize_with = "deserialize_mongo_date")]
+        pub expiry: DateTime<Utc>,
 
-    #[serde(default)]
-    pub hard: bool,
-}
+        pub modifier: Tier,
 
-impl Mappable for FissureUnmapped {
-    type MapTo = Option<Fissure>;
+        #[serde(default)]
+        pub hard: bool,
+    }
 
-    fn map(
-        self,
-        _export: &Exports,
-        custom_maps: &CustomMaps,
-        _worldstate_data: &WorldstateData,
-    ) -> Self::MapTo {
-        let region = custom_maps.solnode_to_region.get(&self.node).cloned()?;
+    impl Resolve<Context<'_>> for FissureUnmapped {
+        type Output = Fissure;
 
-        Some(Fissure {
-            id: self.id.oid,
-            region,
-            seed: self.seed,
-            activation: self.activation,
-            expiry: self.expiry,
-            tier: self.modifier,
-            is_steel_path: self.hard,
-        })
+        fn resolve(self, ctx: Context) -> Self::Output {
+            Fissure {
+                id: self.id.oid,
+                region: self.node.resolve(ctx).cloned(),
+                seed: self.seed,
+                activation: self.activation,
+                expiry: self.expiry,
+                tier: self.modifier,
+                is_steel_path: self.hard,
+            }
+        }
     }
 }
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::worldstate_model::fissure::unmapped::FissureUnmapped;
 
     #[test]
     fn test_deserialization() {
@@ -99,7 +98,7 @@ mod tests {
             "Region": 1,
             "Seed": 12345,
             "Activation": {
-                "$date": {
+                "$date": {kkkkkk
                     "$numberLong": "1614776842000"
                 }
             },

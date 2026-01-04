@@ -5,7 +5,7 @@ use crate::{
 
 pub mod solnode_to_region;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CustomMaps {
     pub solnode_to_region: SolNodeToRegionMap,
 }

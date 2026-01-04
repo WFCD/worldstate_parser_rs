@@ -4,14 +4,13 @@ use serde::{Deserialize, Serialize};
 use crate::{
     custom_maps::solnode_to_region::Region,
     manifest_entries::{faction::Faction, region::MissionType},
-    worldstate_model::{Id, deserialize_mongo_date},
+    worldstate_model::deserialize_mongo_date,
 };
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
 #[serde(rename_all = "PascalCase")]
 pub struct Alert {
-    #[serde(rename = "_id")]
-    pub id: Id,
+    pub id: String,
 
     #[serde(deserialize_with = "deserialize_mongo_date")]
     pub activation: DateTime<Utc>,
@@ -33,11 +32,11 @@ pub struct MissionInfo {
 
     pub faction: Faction,
 
-    pub location: Region,
+    pub location: Option<Region>,
 
-    pub level_override: String,
+    pub level_override: Option<String>,
 
-    pub enemy_spec: String,
+    pub enemy_spec: Option<String>,
 
     pub extra_enemy_spec: Option<String>,
 
@@ -74,15 +73,12 @@ pub struct CountedItem {
     pub item_count: i64,
 }
 
-pub mod unmapped {
+pub(crate) mod unmapped {
     use chrono::{DateTime, Utc};
     use serde::{Deserialize, Serialize};
 
     use crate::{
-        core::{InternalPath, Mappable, UseLanguages},
-        custom_maps::CustomMaps,
-        manifests::Exports,
-        worldstate_data::WorldstateData,
+        core::{Context, InternalPath, Resolve, SolNode, resolve_with},
         worldstate_model::{
             Id,
             WorldstateFaction,
@@ -92,95 +88,66 @@ pub mod unmapped {
         },
     };
 
-    impl Mappable for AlertUnmapped {
-        type MapTo = Option<Alert>;
+    impl Resolve<Context<'_>> for AlertUnmapped {
+        type Output = Alert;
 
-        fn map(
-            self,
-            export: &Exports,
-            custom_maps: &CustomMaps,
-            worldstate_data: &WorldstateData,
-        ) -> Self::MapTo {
-            Some(Alert {
-                id: self.id,
+        fn resolve(self, ctx: Context) -> Self::Output {
+            Alert {
+                id: self.id.oid,
                 activation: self.activation,
                 expiry: self.expiry,
-                mission_info: self
-                    .mission_info
-                    .map(export, custom_maps, worldstate_data)?,
+                mission_info: self.mission_info.resolve(ctx),
                 tag: self.tag,
                 icon: self.icon,
-            })
+            }
         }
     }
 
-    impl Mappable for MissionInfoUnmapped {
-        type MapTo = Option<MissionInfo>;
+    impl Resolve<Context<'_>> for MissionInfoUnmapped {
+        type Output = MissionInfo;
 
-        fn map(
-            self,
-            export: &Exports,
-            custom_maps: &CustomMaps,
-            worldstate_data: &WorldstateData,
-        ) -> Self::MapTo {
-            Some(MissionInfo {
-                mission_type: self.mission_type.try_into().ok()?,
+        fn resolve(self, ctx: Context) -> Self::Output {
+            MissionInfo {
+                mission_type: self.mission_type.into(),
                 faction: self.faction.into(),
-                location: custom_maps
-                    .solnode_to_region
-                    .get(self.location.as_str())
-                    .cloned()?,
-                level_override: self.level_override.to_title_case()?,
-                enemy_spec: self.level_override.to_title_case()?,
+                location: self.location.resolve(ctx).cloned(),
+                level_override: self.level_override.resolve(ctx),
+                enemy_spec: self.enemy_spec.resolve(ctx),
                 extra_enemy_spec: self.extra_enemy_spec.and_then(|spec| spec.to_title_case()),
                 min_enemy_level: self.min_enemy_level,
                 max_enemy_level: self.max_enemy_level,
                 difficulty: self.difficulty,
                 seed: self.seed,
-                mission_reward: self
-                    .mission_reward
-                    .map(export, custom_maps, worldstate_data),
-                desc_text: self.desc_text.map(export, custom_maps, worldstate_data),
-                quest_req: self
-                    .quest_req
-                    .map(|quest_req| quest_req.map(export, custom_maps, worldstate_data)),
+                mission_reward: self.mission_reward.resolve(ctx),
+                desc_text: self.desc_text.resolve(ctx),
+                quest_req: self.quest_req.map(|quest_req| quest_req.resolve(ctx)),
                 leaders_always_allowed: self.leaders_always_allowed,
-            })
+            }
         }
     }
 
-    impl Mappable for MissionRewardUnmapped {
-        type MapTo = MissionReward;
+    impl Resolve<Context<'_>> for MissionRewardUnmapped {
+        type Output = MissionReward;
 
-        fn map(
-            self,
-            export: &Exports,
-            custom_maps: &CustomMaps,
-            worldstate_data: &WorldstateData,
-        ) -> Self::MapTo {
+        fn resolve(self, ctx: Context) -> Self::Output {
             MissionReward {
                 credits: self.credits,
                 counted_items: self
                     .counted_items
                     .into_iter()
-                    .map(|item| item.map(export, custom_maps, worldstate_data))
+                    .map(|item| item.resolve(ctx))
                     .collect(),
             }
         }
     }
 
-    impl Mappable for CountedItemUnmapped {
-        type MapTo = CountedItem;
+    impl Resolve<Context<'_>> for CountedItemUnmapped {
+        type Output = CountedItem;
 
-        fn map(
-            self,
-            export: &Exports,
-            custom_maps: &CustomMaps,
-            worldstate_data: &WorldstateData,
-        ) -> Self::MapTo {
+        fn resolve(self, ctx: Context) -> Self::Output {
             CountedItem {
                 item_count: self.item_count,
-                item_type: self.item_type.map(export, custom_maps, worldstate_data),
+                item_type: self.item_type.resolve(ctx),
             }
         }
     }
@@ -212,11 +179,11 @@ pub mod unmapped {
         faction: WorldstateFaction,
 
         /// Sol Node
-        location: String,
+        location: SolNode,
 
-        level_override: InternalPath,
+        level_override: Option<InternalPath<resolve_with::LastSegment>>,
 
-        enemy_spec: InternalPath,
+        enemy_spec: Option<InternalPath<resolve_with::LastSegment>>,
 
         extra_enemy_spec: Option<InternalPath>,
 
@@ -230,9 +197,9 @@ pub mod unmapped {
 
         mission_reward: MissionRewardUnmapped,
 
-        desc_text: InternalPath<UseLanguages>,
+        desc_text: InternalPath<resolve_with::LanguageItems>,
 
-        quest_req: Option<InternalPath<UseLanguages>>,
+        quest_req: Option<InternalPath<resolve_with::LanguageItems>>,
 
         leaders_always_allowed: bool,
     }
@@ -249,7 +216,7 @@ pub mod unmapped {
     #[derive(Debug, Serialize, Deserialize)]
     #[serde(rename_all = "PascalCase")]
     pub struct CountedItemUnmapped {
-        item_type: InternalPath<UseLanguages>,
+        item_type: InternalPath<resolve_with::LanguageItems>,
 
         item_count: i64,
     }

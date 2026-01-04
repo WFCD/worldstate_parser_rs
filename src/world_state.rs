@@ -1,19 +1,16 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::Mappable,
-    custom_maps::CustomMaps,
-    manifests::Exports,
-    worldstate_data::WorldstateData,
+    core::{Context, Resolve},
     worldstate_model::{
-        alert::unmapped::AlertUnmapped,
-        fissure::{Fissure, FissureUnmapped},
+        alert::{Alert, unmapped::AlertUnmapped},
+        fissure::{Fissure, unmapped::FissureUnmapped},
     },
 };
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct WorldStateUnmapped {
+pub(crate) struct WorldStateUnmapped {
     #[serde(rename = "ActiveMissions")]
     pub fissures: Vec<FissureUnmapped>,
 
@@ -21,23 +18,18 @@ pub struct WorldStateUnmapped {
 }
 
 impl WorldStateUnmapped {
-    pub fn map_worldstate(
-        self,
-        exports: &Exports,
-        custom_maps: &CustomMaps,
-        worldstate_data: &WorldstateData,
-    ) -> Option<WorldState> {
-        let fissures = self
-            .fissures
-            .into_iter()
-            .map(|unmapped_fissure| unmapped_fissure.map(exports, custom_maps, worldstate_data))
-            .collect::<Option<Vec<_>>>()?;
+    pub fn map_worldstate(self, ctx: Context<'_>) -> Option<WorldState> {
+        let fissures = self.fissures.resolve(ctx);
 
-        Some(WorldState { fissures })
+        let alerts = self.alerts.resolve(ctx);
+
+        Some(WorldState { fissures, alerts })
     }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WorldState {
     pub fissures: Vec<Fissure>,
+
+    pub alerts: Vec<Alert>,
 }

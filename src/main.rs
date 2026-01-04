@@ -12,6 +12,7 @@ use reqwest::blocking::get;
 use serde::de::DeserializeOwned;
 
 use crate::{
+    core::Context,
     custom_maps::CustomMaps,
     manifests::Exports,
     world_state::WorldStateUnmapped,
@@ -20,10 +21,15 @@ use crate::{
 
 type BoxDynError = Box<dyn Error>;
 
+pub const CACHE_DIR: &str = "./cache";
+
 fn get_from_cache_or_fetch<T: DeserializeOwned>(manifest: &str) -> Result<T, BoxDynError> {
-    let path = Path::new("./cache").join(manifest).with_extension("json");
+    let path = Path::new(CACHE_DIR)
+        .join(manifest)
+        .with_added_extension("json");
 
     if let Ok(cached) = fs::read_to_string(&path) {
+        println!("Using cache at {}", path.to_str().unwrap());
         return Ok(serde_json::from_str(&cached)?);
     }
 
@@ -32,6 +38,19 @@ fn get_from_cache_or_fetch<T: DeserializeOwned>(manifest: &str) -> Result<T, Box
         manifest
     ))?
     .text()?;
+
+    for file in fs::read_dir(CACHE_DIR)? {
+        let file_name = file?.file_name().into_string().unwrap();
+
+        if file_name.starts_with(
+            manifest
+                .split_once('!')
+                .expect("Manifest should be valid")
+                .0,
+        ) {
+            fs::remove_file(file_name)?;
+        }
+    }
 
     fs::write(path, &item_json)?;
 
@@ -63,12 +82,21 @@ fn main() -> Result<(), BoxDynError> {
     let custom_maps = CustomMaps::from_exports(&exports);
     let worldstate_data = WorldstateData::new("data/")?;
 
+    let ctx = Context {
+        custom_maps: &custom_maps,
+        exports: &exports,
+        worldstate_data: &worldstate_data,
+    };
+
     let fissures =
         serde_json::from_str::<WorldStateUnmapped>(&fs::read_to_string("worldstate.json")?)?
-            .map_worldstate(&exports, &custom_maps, &worldstate_data)
+            .map_worldstate(ctx)
             .ok_or("Failed to map worldstate")?;
 
-    fs::write("fissures.json", serde_json::to_string_pretty(&fissures)?)?;
+    fs::write(
+        "worldstate_parsed.json",
+        serde_json::to_string_pretty(&fissures)?,
+    )?;
 
     Ok(())
 }

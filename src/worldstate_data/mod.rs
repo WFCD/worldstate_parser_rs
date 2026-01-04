@@ -22,7 +22,7 @@ fn init<T: DeserializeOwned>(
     )?)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldstateData {
     pub language_items: LanguageItemMap,
 }

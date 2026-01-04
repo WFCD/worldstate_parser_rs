@@ -63,23 +63,24 @@ impl FromStr for PublicExportIndex {
 }
 
 all_the_exports! {
-    struct ExportRegions(RegionManifestEntry)
+    struct ExportRegions(RegionManifestEntry);
+
 }
 
 macro_rules! all_the_exports {
     (
-        $( struct $ident:ident( $inner_type:ty ) ),*
+        $( struct $ident:ident( $inner_type:ty ); )*
     ) => {
         paste::paste! {
             $(
-                #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+                #[derive(Debug, Clone, serde::Deserialize, serde::Serialize, PartialEq)]
                 #[serde(rename_all = "PascalCase")]
                 pub struct $ident {
                     pub [<$ident:snake>]: Vec<$inner_type>,
                 }
             )*
 
-            #[derive(Clone, serde::Serialize, serde::Deserialize)]
+            #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq)]
             pub struct Exports {
                 $(
                     pub [<$ident:snake>]: $ident,

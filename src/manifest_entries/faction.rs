@@ -7,7 +7,7 @@ pub enum Faction {
     Grineer = 0,
     Corpus = 1,
     Infested = 2,
-    Corrupted = 3,
+    Orokin = 3,
     Sentient = 5,
     Murmur = 7,
     Scaldra = 8,

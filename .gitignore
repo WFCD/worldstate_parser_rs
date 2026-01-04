@@ -1,7 +1,7 @@
 /target
 /.vscode/
 /worldstate.json
-/fissures.json
+/worldstate_parsed.json
 /cache/
 /assets/
 /data/

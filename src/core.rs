@@ -3,17 +3,46 @@ use std::marker::PhantomData;
 use heck::ToTitleCase;
 use serde::{Deserialize, Serialize};
 
-use crate::{custom_maps::CustomMaps, manifests::Exports, worldstate_data::WorldstateData};
+use crate::{
+    custom_maps::{CustomMaps, solnode_to_region::Region},
+    manifests::Exports,
+    worldstate_data::WorldstateData,
+};
 
-pub trait Mappable {
-    type MapTo;
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Context<'a> {
+    pub exports: &'a Exports,
+    pub custom_maps: &'a CustomMaps,
+    pub worldstate_data: &'a WorldstateData,
+}
 
-    fn map(
-        self,
-        export: &Exports,
-        custom_maps: &CustomMaps,
-        worldstate_data: &WorldstateData,
-    ) -> Self::MapTo;
+pub trait Resolve<Ctx> {
+    type Output;
+
+    fn resolve(self, ctx: Ctx) -> Self::Output;
+}
+
+impl<T, Ctx> Resolve<Ctx> for Option<T>
+where
+    T: Resolve<Ctx>,
+{
+    type Output = Option<T::Output>;
+
+    fn resolve(self, ctx: Ctx) -> Self::Output {
+        self.map(|value| value.resolve(ctx))
+    }
+}
+
+impl<T, Ctx> Resolve<Ctx> for Vec<T>
+where
+    Ctx: Copy,
+    T: Resolve<Ctx>,
+{
+    type Output = Vec<T::Output>;
+
+    fn resolve(self, ctx: Ctx) -> Self::Output {
+        self.into_iter().map(|item| item.resolve(ctx)).collect()
+    }
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq, Hash, derive_more::FromStr)]
@@ -27,24 +56,30 @@ pub enum InternalPathTag {
     Unknown,
 }
 
-#[derive(Debug)]
-pub struct UseLanguages;
+pub mod resolve_with {
+    pub struct LanguageItems;
+    pub struct SolNodes;
+    pub struct LastSegment;
+}
 
 /// Deserializes an internal path like `/Lotus/Levels/Proc/Orokin/OrokinTowerMobileDefense`.
 ///
 /// Yields additional info about the tag via the [`InternalPath::tag`] field.
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash, derive_more::Display)]
+#[derive(
+    derive_more::Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash, derive_more::Display,
+)]
 #[serde(from = "String")]
 #[display("{path}")]
-pub struct InternalPath<T = ()> {
+pub struct InternalPath<Resolver = ()> {
     pub path: String,
     pub tag: InternalPathTag,
 
     #[serde(skip)]
-    _p: PhantomData<T>,
+    #[debug(skip)]
+    _p: PhantomData<Resolver>,
 }
 
-impl<T> From<String> for InternalPath<T> {
+impl<Resolver> From<String> for InternalPath<Resolver> {
     fn from(path: String) -> Self {
         let tag = path
             .split('/')
@@ -71,21 +106,35 @@ impl<T> InternalPath<T> {
     }
 }
 
-impl Mappable for InternalPath<UseLanguages> {
-    type MapTo = String;
+impl Resolve<Context<'_>> for InternalPath<resolve_with::LanguageItems> {
+    type Output = String;
 
-    fn map(
-        self,
-        _export: &Exports,
-        _custom_maps: &CustomMaps,
-        worldstate_data: &WorldstateData,
-    ) -> Self::MapTo {
-        worldstate_data
+    fn resolve(self, ctx: Context) -> Self::Output {
+        ctx.worldstate_data
             .language_items
             .get(&self.path)
             .map(|item| &item.value)
             .cloned()
             .unwrap_or_else(|| self.to_title_case().unwrap_or(self.path))
+    }
+}
+
+impl Resolve<Context<'_>> for InternalPath<resolve_with::LastSegment> {
+    type Output = String;
+
+    fn resolve(self, _ctx: Context<'_>) -> Self::Output {
+        self.into_title_case_or_path()
+    }
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
+pub(crate) struct SolNode(pub String);
+
+impl<'a> Resolve<Context<'a>> for SolNode {
+    type Output = Option<&'a Region>;
+
+    fn resolve(self, ctx: Context<'a>) -> Self::Output {
+        ctx.custom_maps.solnode_to_region.get(&self.0)
     }
 }
 
