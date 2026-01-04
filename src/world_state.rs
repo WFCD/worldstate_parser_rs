@@ -5,6 +5,7 @@ use crate::{
     worldstate_model::{
         alert::{Alert, unmapped::AlertUnmapped},
         fissure::{Fissure, unmapped::FissureUnmapped},
+        sortie::{Sortie, unmapped::SortieUnmapped},
     },
 };
 
@@ -15,15 +16,21 @@ pub(crate) struct WorldStateUnmapped {
     pub fissures: Vec<FissureUnmapped>,
 
     pub alerts: Vec<AlertUnmapped>,
+
+    pub sorties: Vec<SortieUnmapped>,
 }
 
 impl WorldStateUnmapped {
     pub fn map_worldstate(self, ctx: Context<'_>) -> Option<WorldState> {
         let fissures = self.fissures.resolve(ctx);
-
         let alerts = self.alerts.resolve(ctx);
+        let sorties = self.sorties.resolve(ctx);
 
-        Some(WorldState { fissures, alerts })
+        Some(WorldState {
+            fissures,
+            alerts,
+            sorties,
+        })
     }
 }
 
@@ -32,4 +39,6 @@ pub struct WorldState {
     pub fissures: Vec<Fissure>,
 
     pub alerts: Vec<Alert>,
+
+    pub sorties: Vec<Sortie>,
 }

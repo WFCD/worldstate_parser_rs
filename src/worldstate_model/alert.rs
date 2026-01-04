@@ -2,8 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    custom_maps::solnode_to_region::Region,
-    manifest_entries::{faction::Faction, region::MissionType},
+    target_types::{faction::Faction, mission_type::MissionType, region::Region},
     worldstate_model::deserialize_mongo_date,
 };
 
@@ -78,7 +77,7 @@ pub(crate) mod unmapped {
     use serde::{Deserialize, Serialize};
 
     use crate::{
-        core::{Context, InternalPath, Resolve, SolNode, resolve_with},
+        core::{Context, InternalPath, Resolve, resolve_with, sol_node::SolNode},
         worldstate_model::{
             Id,
             WorldstateFaction,
@@ -111,8 +110,8 @@ pub(crate) mod unmapped {
                 mission_type: self.mission_type.into(),
                 faction: self.faction.into(),
                 location: self.location.resolve(ctx).cloned(),
-                level_override: self.level_override.resolve(ctx),
-                enemy_spec: self.enemy_spec.resolve(ctx),
+                level_override: self.level_override.resolve(()),
+                enemy_spec: self.enemy_spec.resolve(()),
                 extra_enemy_spec: self.extra_enemy_spec.and_then(|spec| spec.to_title_case()),
                 min_enemy_level: self.min_enemy_level,
                 max_enemy_level: self.max_enemy_level,

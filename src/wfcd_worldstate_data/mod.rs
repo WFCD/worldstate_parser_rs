@@ -1,10 +1,14 @@
 pub mod language_item;
+pub mod sortie_data;
 
 use std::{fs, io, path::Path};
 
 use serde::{Deserialize, Deserializer, de::DeserializeOwned};
 
-use crate::{core::InternalPath, worldstate_data::language_item::LanguageItemMap};
+use crate::{
+    core::InternalPath,
+    wfcd_worldstate_data::{language_item::LanguageItemMap, sortie_data::SortieData},
+};
 
 #[derive(Debug, thiserror::Error)]
 #[error(transparent)]
@@ -25,12 +29,15 @@ fn init<T: DeserializeOwned>(
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WorldstateData {
     pub language_items: LanguageItemMap,
+    pub sortie_data: SortieData,
 }
 
 impl WorldstateData {
     pub fn new(data_dir: impl AsRef<Path>) -> Result<Self, WorldstateDataError> {
+        let data_dir = data_dir.as_ref();
         Ok(Self {
             language_items: init(data_dir, "languages")?,
+            sortie_data: init(data_dir, "sortieData")?,
         })
     }
 }

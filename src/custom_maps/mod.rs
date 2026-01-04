@@ -1,9 +1,8 @@
-use crate::{
-    custom_maps::solnode_to_region::{Region, SolNodeToRegionMap},
-    manifests::Exports,
-};
+use std::collections::HashMap;
 
-pub mod solnode_to_region;
+use crate::{manifests::Exports, target_types::region::Region};
+
+pub type SolNodeToRegionMap = HashMap<String, Region>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CustomMaps {

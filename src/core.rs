@@ -1,13 +1,12 @@
+pub mod resolvable_string;
+pub mod sol_node;
+
 use std::marker::PhantomData;
 
 use heck::ToTitleCase;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    custom_maps::{CustomMaps, solnode_to_region::Region},
-    manifests::Exports,
-    worldstate_data::WorldstateData,
-};
+use crate::{custom_maps::CustomMaps, manifests::Exports, wfcd_worldstate_data::WorldstateData};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Context<'a> {
@@ -60,6 +59,12 @@ pub mod resolve_with {
     pub struct LanguageItems;
     pub struct SolNodes;
     pub struct LastSegment;
+
+    pub mod sortie {
+        pub struct Modifier;
+
+        pub struct Boss;
+    }
 }
 
 /// Deserializes an internal path like `/Lotus/Levels/Proc/Orokin/OrokinTowerMobileDefense`.
@@ -119,22 +124,11 @@ impl Resolve<Context<'_>> for InternalPath<resolve_with::LanguageItems> {
     }
 }
 
-impl Resolve<Context<'_>> for InternalPath<resolve_with::LastSegment> {
+impl Resolve<()> for InternalPath<resolve_with::LastSegment> {
     type Output = String;
 
-    fn resolve(self, _ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, _ctx: ()) -> Self::Output {
         self.into_title_case_or_path()
-    }
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub(crate) struct SolNode(pub String);
-
-impl<'a> Resolve<Context<'a>> for SolNode {
-    type Output = Option<&'a Region>;
-
-    fn resolve(self, ctx: Context<'a>) -> Self::Output {
-        ctx.custom_maps.solnode_to_region.get(&self.0)
     }
 }
 

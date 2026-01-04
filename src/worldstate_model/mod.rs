@@ -1,10 +1,11 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::manifest_entries::{faction::Faction, region::MissionType};
+use crate::target_types::{faction::Faction, mission_type::MissionType};
 
 pub mod alert;
 pub mod fissure;
+pub mod sortie;
 
 pub fn deserialize_mongo_date<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
 where

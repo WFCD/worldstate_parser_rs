@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::custom_maps::solnode_to_region::Region;
+use crate::target_types::region::Region;
 
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum Tier {
@@ -19,7 +19,7 @@ pub enum Tier {
     Omnia,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone, Hash)]
 pub struct Fissure {
     pub id: String,
 
@@ -41,7 +41,7 @@ pub(crate) mod unmapped {
     use serde::{Deserialize, Serialize};
 
     use crate::{
-        core::{Context, Resolve, SolNode},
+        core::{Context, Resolve, sol_node::SolNode},
         worldstate_model::{
             Id,
             deserialize_mongo_date,

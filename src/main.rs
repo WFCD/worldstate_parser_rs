@@ -2,8 +2,9 @@ pub mod core;
 pub mod custom_maps;
 pub mod manifest_entries;
 pub mod manifests;
+pub mod target_types;
+pub mod wfcd_worldstate_data;
 pub mod world_state;
-pub mod worldstate_data;
 pub mod worldstate_model;
 
 use std::{error::Error, fs, path::Path};
@@ -15,8 +16,8 @@ use crate::{
     core::Context,
     custom_maps::CustomMaps,
     manifests::Exports,
+    wfcd_worldstate_data::WorldstateData,
     world_state::WorldStateUnmapped,
-    worldstate_data::WorldstateData,
 };
 
 type BoxDynError = Box<dyn Error>;

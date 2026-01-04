@@ -1,13 +1,9 @@
-use std::collections::HashMap;
-
 use serde::{Deserialize, Serialize};
 
-use crate::manifest_entries::{
-    faction::Faction,
-    region::{MissionType, NodeType, RegionManifestEntry},
+use crate::{
+    manifest_entries::region::{NodeType, RegionManifestEntry},
+    target_types::{faction::Faction, mission_type::MissionType},
 };
-
-pub type SolNodeToRegionMap = HashMap<String, Region>;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub struct Region {
