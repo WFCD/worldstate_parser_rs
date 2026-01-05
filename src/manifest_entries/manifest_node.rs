@@ -47,7 +47,7 @@ impl Resolve<()> for ManifestNode {
     fn resolve(self, _: ()) -> Self::Output {
         Node {
             system_index: self.system_index,
-            node: self.name,
+            name: self.name,
             planet: self.system_name,
             mastery_req: self.mastery_req,
             mission_type: self.mission_index.resolve(()),

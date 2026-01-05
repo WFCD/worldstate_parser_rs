@@ -6,7 +6,7 @@ use crate::target_types::{faction::Faction, mission_type::MissionType};
 pub struct Node {
     pub system_index: usize,
 
-    pub node: String,
+    pub name: String,
 
     pub planet: String,
 
