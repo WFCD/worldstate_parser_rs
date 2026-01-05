@@ -3,12 +3,9 @@ pub mod sortie_data;
 
 use std::{fs, io, path::Path};
 
-use serde::{Deserialize, Deserializer, de::DeserializeOwned};
+use serde::de::DeserializeOwned;
 
-use crate::{
-    core::InternalPath,
-    wfcd_worldstate_data::{language_item::LanguageItemMap, sortie_data::SortieData},
-};
+use crate::wfcd_worldstate_data::{language_item::LanguageItemMap, sortie_data::SortieData};
 
 #[derive(Debug, thiserror::Error)]
 #[error(transparent)]
@@ -40,15 +37,4 @@ impl WorldstateData {
             sortie_data: init(data_dir, "sortieData")?,
         })
     }
-}
-
-pub fn empty_string_as_none<'de, D>(deserializer: D) -> Result<Option<InternalPath>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s = String::deserialize(deserializer)?;
-
-    let has_content = !s.is_empty();
-
-    Ok(has_content.then(|| InternalPath::from(s)))
 }

@@ -1,6 +1,6 @@
 use std::{collections::HashMap, str::FromStr};
 
-use crate::manifest_entries::region::RegionManifestEntry;
+use crate::manifest_entries::manifest_node::ManifestNode;
 
 #[derive(Debug)]
 pub struct PublicExportIndex {
@@ -63,7 +63,7 @@ impl FromStr for PublicExportIndex {
 }
 
 all_the_exports! {
-    struct ExportRegions(RegionManifestEntry);
+    struct ExportRegions(ManifestNode);
 
 }
 

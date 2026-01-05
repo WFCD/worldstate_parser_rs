@@ -2,11 +2,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{Context, Resolve},
-    worldstate_model::{
-        alert::{Alert, unmapped::AlertUnmapped},
-        fissure::{Fissure, unmapped::FissureUnmapped},
-        sortie::{Sortie, unmapped::SortieUnmapped},
-    },
+    target_types::worldstate::{alert::Alert, fissure::Fissure, sortie::Sortie},
+    worldstate_model::{alert::AlertUnmapped, fissure::FissureUnmapped, sortie::SortieUnmapped},
 };
 
 #[derive(Debug, serde::Deserialize)]

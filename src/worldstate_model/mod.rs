@@ -1,7 +1,10 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::target_types::{faction::Faction, mission_type::MissionType};
+use crate::{
+    core::Resolve,
+    target_types::{faction::Faction, mission_type::MissionType},
+};
 
 pub mod alert;
 pub mod fissure;
@@ -63,18 +66,20 @@ pub enum WorldstateFaction {
     Orokin,
 }
 
-impl From<WorldstateFaction> for Faction {
-    fn from(value: WorldstateFaction) -> Self {
-        match value {
-            WorldstateFaction::Corpus => Self::Corpus,
-            WorldstateFaction::Corrupted => Self::Orokin,
-            WorldstateFaction::Grineer => Self::Grineer,
-            WorldstateFaction::Infestation => Self::Infested,
-            WorldstateFaction::TheMurmur => Self::Murmur,
-            WorldstateFaction::Scaldra => Self::Scaldra,
-            WorldstateFaction::Sentient => Self::Sentient,
-            WorldstateFaction::Techrot => Self::Techrot,
-            WorldstateFaction::Orokin => Self::Orokin,
+impl Resolve<()> for WorldstateFaction {
+    type Output = Faction;
+
+    fn resolve(self, _: ()) -> Self::Output {
+        match self {
+            WorldstateFaction::Corpus => Faction::Corpus,
+            WorldstateFaction::Corrupted => Faction::Orokin,
+            WorldstateFaction::Grineer => Faction::Grineer,
+            WorldstateFaction::Infestation => Faction::Infested,
+            WorldstateFaction::TheMurmur => Faction::Murmur,
+            WorldstateFaction::Scaldra => Faction::Scaldra,
+            WorldstateFaction::Sentient => Faction::Sentient,
+            WorldstateFaction::Techrot => Faction::Techrot,
+            WorldstateFaction::Orokin => Faction::Orokin,
         }
     }
 }
@@ -137,34 +142,38 @@ pub enum WorldstateMissionType {
     VoidCascade,
 }
 
-impl From<WorldstateMissionType> for MissionType {
-    fn from(value: WorldstateMissionType) -> Self {
-        match value {
-            WorldstateMissionType::Rathuum => Self::Rathuum,
-            WorldstateMissionType::VoidArmageddon => Self::VoidArmaggedon,
-            WorldstateMissionType::Disruption => Self::Disruption,
-            WorldstateMissionType::Assault => Self::Assault,
-            WorldstateMissionType::Assassination => Self::Assassination,
-            WorldstateMissionType::Capture => Self::Capture,
-            WorldstateMissionType::VoidFlood => Self::VoidFlood,
-            WorldstateMissionType::Defense => Self::Defense,
-            WorldstateMissionType::LegacyteHarvest => Self::LegacyteHarvest,
-            WorldstateMissionType::Defection => Self::Defection,
-            WorldstateMissionType::Excavation => Self::Excavation,
-            WorldstateMissionType::Exterminate => Self::Exterminate,
-            WorldstateMissionType::HiveSabotage => Self::HiveSabotage,
-            WorldstateMissionType::Spy => Self::Spy,
-            WorldstateMissionType::Landscape => Self::Landscape,
-            WorldstateMissionType::MobileDefense => Self::MobileDefense,
-            WorldstateMissionType::InfestedSalvage => Self::InfestedSalvage,
-            WorldstateMissionType::Rush => Self::Rush,
-            WorldstateMissionType::Rescue => Self::Rescue,
-            WorldstateMissionType::Hijack => Self::Hijack,
-            WorldstateMissionType::Sabotage => Self::Sabotage,
-            WorldstateMissionType::Survival => Self::Survival,
-            WorldstateMissionType::Interception => Self::Interception,
-            WorldstateMissionType::VoidCascade => Self::VoidCascade,
-            _ => Self::Unknown,
+impl Resolve<()> for WorldstateMissionType {
+    type Output = MissionType;
+
+    fn resolve(self, _: ()) -> Self::Output {
+        match self {
+            WorldstateMissionType::Rathuum => MissionType::Rathuum,
+            WorldstateMissionType::VoidArmageddon => MissionType::VoidArmaggedon,
+            WorldstateMissionType::Disruption => MissionType::Disruption,
+            WorldstateMissionType::Assault => MissionType::Assault,
+            WorldstateMissionType::Assassination => MissionType::Assassination,
+            WorldstateMissionType::Capture => MissionType::Capture,
+            WorldstateMissionType::VoidFlood => MissionType::VoidFlood,
+            WorldstateMissionType::Defense => MissionType::Defense,
+            WorldstateMissionType::LegacyteHarvest => MissionType::LegacyteHarvest,
+            WorldstateMissionType::Defection => MissionType::Defection,
+            WorldstateMissionType::Excavation => MissionType::Excavation,
+            WorldstateMissionType::Exterminate => MissionType::Exterminate,
+            WorldstateMissionType::HiveSabotage => MissionType::HiveSabotage,
+            WorldstateMissionType::Spy => MissionType::Spy,
+            WorldstateMissionType::Landscape => MissionType::Landscape,
+            WorldstateMissionType::MobileDefense => MissionType::MobileDefense,
+            WorldstateMissionType::InfestedSalvage => MissionType::InfestedSalvage,
+            WorldstateMissionType::Rush => MissionType::Rush,
+            WorldstateMissionType::Rescue => MissionType::Rescue,
+            WorldstateMissionType::Hijack => MissionType::Hijack,
+            WorldstateMissionType::Sabotage => MissionType::Sabotage,
+            WorldstateMissionType::Survival => MissionType::Survival,
+            WorldstateMissionType::Interception => MissionType::Interception,
+            WorldstateMissionType::VoidCascade => MissionType::VoidCascade,
+            WorldstateMissionType::Unknown => MissionType::Unknown,
+            WorldstateMissionType::SanctuaryOnslaught => MissionType::SanctuaryOnslaught,
+            WorldstateMissionType::Conclave => MissionType::Conclave,
         }
     }
 }

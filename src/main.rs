@@ -3,14 +3,15 @@ pub mod custom_maps;
 pub mod manifest_entries;
 pub mod manifests;
 pub mod target_types;
-pub mod wfcd_worldstate_data;
+pub(crate) mod wfcd_worldstate_data;
 pub mod world_state;
-pub mod worldstate_model;
+pub(crate) mod worldstate_model;
 
 use std::{error::Error, fs, path::Path};
 
 use reqwest::blocking::get;
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
+use serde_json::Serializer;
 
 use crate::{
     core::Context,
@@ -89,15 +90,22 @@ fn main() -> Result<(), BoxDynError> {
         worldstate_data: &worldstate_data,
     };
 
-    let fissures =
+    let world_state =
         serde_json::from_str::<WorldStateUnmapped>(&fs::read_to_string("worldstate.json")?)?
             .map_worldstate(ctx)
             .ok_or("Failed to map worldstate")?;
 
-    fs::write(
-        "worldstate_parsed.json",
-        serde_json::to_string_pretty(&fissures)?,
-    )?;
+    let formatter = serde_json::ser::PrettyFormatter::with_indent(b"    ");
+
+    let mut buf = Vec::new();
+
+    let mut ser = Serializer::with_formatter(&mut buf, formatter);
+
+    world_state.serialize(&mut ser).unwrap();
+
+    let world_state_json = String::from_utf8(buf).unwrap();
+
+    fs::write("worldstate_parsed.json", world_state_json)?;
 
     Ok(())
 }

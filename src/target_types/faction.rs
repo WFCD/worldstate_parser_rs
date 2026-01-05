@@ -1,16 +1,19 @@
-use serde::Serialize;
-use serde_repr::Deserialize_repr;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize_repr, Serialize, Clone, Copy, PartialEq, Eq, PartialOrd, Hash)]
-#[repr(u8)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash, derive_more::Display)]
 pub enum Faction {
-    Grineer = 0,
-    Corpus = 1,
-    Infested = 2,
-    Orokin = 3,
-    Sentient = 5,
-    Murmur = 7,
-    Scaldra = 8,
-    Techrot = 9,
-    Duviri = 10,
+    Grineer,
+    Corpus,
+    Infested,
+    Orokin,
+    Sentient,
+    Stalker,
+    Narmer,
+    Murmur,
+    Scaldra,
+    Techrot,
+    Anarchs,
+
+    /// Not really a faction, but can occur as "Faction"
+    Duviri,
 }

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{manifests::Exports, target_types::region::Region};
+use crate::{core::Resolve, manifests::Exports, target_types::node::Node};
 
-pub type SolNodeToRegionMap = HashMap<String, Region>;
+pub type SolNodeToRegionMap = HashMap<String, Node>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CustomMaps {
@@ -16,7 +16,7 @@ impl CustomMaps {
             .export_regions
             .iter()
             .cloned()
-            .map(|region| (region.unique_name.clone(), Region::from(region)))
+            .map(|region| (region.unique_name.clone(), region.resolve(())))
             .collect::<SolNodeToRegionMap>();
 
         Self {

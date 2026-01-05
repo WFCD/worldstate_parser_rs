@@ -41,7 +41,7 @@ impl Resolve<()> for SortieBossFaction {
             SortieBossFaction::Grineer => Faction::Grineer,
             SortieBossFaction::Infestation => Faction::Infested,
             SortieBossFaction::Corrupted => Faction::Orokin,
-            SortieBossFaction::Narmer => unreachable!("Narmer cannot not appear in sorties"),
+            SortieBossFaction::Narmer => Faction::Narmer,
         }
     }
 }
