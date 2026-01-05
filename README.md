@@ -2,16 +2,24 @@
 
 A very WIP worldstate parser for http://api.warframe.com/cdn/worldState.php - in Rust!
 
-## Features
+## Not a lib?
 
-It can currently (almost) map fissures to a very developer friendly format.
+No, not yet. Why? To make development a bit easier/more comfortable.
 
 ## Running
-
-Ensure you have Rust and Cargo installed.
-
-Clone and run:
 
 ```sh
 cargo run
 ```
+
+You need a `worldstate.json`, the content of which you can grab [here](http://api.warframe.com/cdn/worldState.php).
+
+Additionally run the [nushell script](./fetch_data.nu) which will fetch the translation data.
+
+## Translation Data
+
+Provided by the awesome [warframe-worldstate-data](https://github.com/WFCD/warframe-worldstate-data) project.
+
+## Localization
+
+Not yet supported. Can be added if requested.
