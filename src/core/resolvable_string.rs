@@ -1,14 +1,14 @@
 use std::marker::PhantomData;
 
 use heck::ToTitleCase;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{Context, Resolve, resolve_with},
     wfcd_worldstate_data::sortie_data::Boss,
 };
 
-#[derive(derive_more::Debug, Clone, Deserialize, PartialEq, Eq, Hash)]
+#[derive(derive_more::Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 #[serde(from = "String")]
 pub(crate) struct ResolvableString<Resolver = ()>(pub String, PhantomData<Resolver>);
 

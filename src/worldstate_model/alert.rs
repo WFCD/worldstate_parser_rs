@@ -120,7 +120,7 @@ pub struct MissionInfoUnmapped {
 
     quest_req: Option<InternalPath<resolve_with::LanguageItems>>,
 
-    leaders_always_allowed: bool,
+    leaders_always_allowed: Option<bool>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

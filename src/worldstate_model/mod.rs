@@ -3,11 +3,14 @@ use serde::{Deserialize, Deserializer, Serialize};
 
 use crate::{
     core::Resolve,
-    target_types::{faction::Faction, mission_type::MissionType},
+    target_types::{faction::Faction, language::Language, mission_type::MissionType},
 };
 
 pub mod alert;
+pub mod archon_hunt;
+pub mod event;
 pub mod fissure;
+pub mod goal;
 pub mod sortie;
 
 pub fn deserialize_mongo_date<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
@@ -36,6 +39,45 @@ where
     Utc.timestamp_millis_opt(millis)
         .single()
         .ok_or_else(|| serde::de::Error::custom("invalid timestamp"))
+}
+
+pub fn deserialize_mongo_date_opt<'de, D>(
+    deserializer: D,
+) -> Result<Option<DateTime<Utc>>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    struct MongoDate {
+        #[serde(rename = "$date")]
+        date: MongoDateInner,
+    }
+
+    #[derive(Deserialize)]
+    struct MongoDateInner {
+        #[serde(rename = "$numberLong")]
+        number_long: String,
+    }
+
+    let v: Option<MongoDate> = Option::deserialize(deserializer)?;
+
+    match v {
+        Some(mongo_date) => {
+            let millis = mongo_date
+                .date
+                .number_long
+                .parse::<i64>()
+                .map_err(serde::de::Error::custom)?;
+
+            let dt = Utc
+                .timestamp_millis_opt(millis)
+                .single()
+                .ok_or_else(|| serde::de::Error::custom("invalid timestamp"))?;
+
+            Ok(Some(dt))
+        },
+        None => Ok(None),
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
@@ -176,4 +218,87 @@ impl Resolve<()> for WorldstateMissionType {
             WorldstateMissionType::Conclave => MissionType::Conclave,
         }
     }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum WorldstateLanguage {
+    EN,
+    FR,
+    IT,
+    DE,
+    ES,
+    PT,
+    RU,
+    PL,
+    UK,
+    TR,
+    JA,
+    ZH,
+    KO,
+    TC,
+    TH,
+}
+
+impl Resolve<()> for WorldstateLanguage {
+    type Output = Language;
+    fn resolve(self, _: ()) -> Self::Output {
+        match self {
+            Self::EN => Language::English,
+            Self::FR => Language::French,
+            Self::IT => Language::Italian,
+            Self::DE => Language::German,
+            Self::ES => Language::Spanish,
+            Self::PT => Language::Portuguese,
+            Self::RU => Language::Russian,
+            Self::PL => Language::Polish,
+            Self::UK => Language::Ukrainian,
+            Self::TR => Language::Turkish,
+            Self::JA => Language::Japanese,
+            Self::ZH => Language::ChineseSimplified,
+            Self::KO => Language::Korean,
+            Self::TC => Language::ChineseTraditional,
+            Self::TH => Language::Thai,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Deserialize, Serialize)]
+pub enum WorldstateSyndicateType {
+    ArbitersSyndicate,
+    NecraloidSyndicate,
+    EventSyndicate,
+    CephalonSudaSyndicate,
+    KahlSyndicate,
+    NewLokaSyndicate,
+    NightcapJournalSyndicate,
+    QuillsSyndicate,
+    RadioLegion3Syndicate,
+    RadioLegion2Syndicate,
+    PerrinSyndicate,
+    RadioLegionIntermission10Syndicate,
+    RadioLegionIntermission11Syndicate,
+    RadioLegionIntermission13Syndicate,
+    RadioLegionIntermission12Syndicate,
+    RadioLegionIntermission2Syndicate,
+    RadioLegionIntermission3Syndicate,
+    RadioLegionIntermission14Syndicate,
+    RadioLegionIntermission4Syndicate,
+    RadioLegionIntermission6Syndicate,
+    RadioLegionIntermission5Syndicate,
+    RadioLegionIntermission9Syndicate,
+    RadioLegionIntermission7Syndicate,
+    RadioLegionIntermission8Syndicate,
+    RadioLegionSyndicate,
+    RadioLegionIntermissionSyndicate,
+    VoxSyndicate,
+    RedVeilSyndicate,
+    VentKidsSyndicate,
+    SteelMeridianSyndicate,
+    EntratiLabSyndicate,
+    HexSyndicate,
+    EntratiSyndicate,
+    CetusSyndicate,
+    SolarisSyndicate,
+    ZarimanSyndicate,
 }

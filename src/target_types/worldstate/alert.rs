@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
 use crate::target_types::{faction::Faction, mission_type::MissionType, node::Node};
 
@@ -19,6 +20,7 @@ pub struct Alert {
     pub icon: String,
 }
 
+#[skip_serializing_none]
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct MissionInfo {
@@ -48,7 +50,7 @@ pub struct MissionInfo {
 
     pub quest_req: Option<String>,
 
-    pub leaders_always_allowed: bool,
+    pub leaders_always_allowed: Option<bool>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]

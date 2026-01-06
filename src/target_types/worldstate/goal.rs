@@ -3,30 +3,32 @@ use serde::{Deserialize, Serialize};
 
 use crate::target_types::node::Node;
 
-#[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub enum Tier {
-    Lith,
-    Meso,
-    Neo,
-    Axi,
-    Requiem,
-    Omnia,
-}
-
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone, Hash)]
 #[serde(rename_all = "camelCase")]
-pub struct Fissure {
+pub struct Goal {
     pub id: String,
-
-    pub node: Option<Node>,
-
-    pub seed: usize,
 
     pub activation: DateTime<Utc>,
 
     pub expiry: DateTime<Utc>,
 
-    pub tier: Tier,
+    pub grace_period: DateTime<Utc>,
 
-    pub is_steel_path: bool,
+    pub count: u64,
+
+    pub goal: u64,
+
+    pub success: u64,
+
+    pub personal: bool,
+
+    pub desc: String,
+
+    pub tool_tip: String,
+
+    pub icon: String,
+
+    pub tag: String,
+
+    pub node: Option<Node>,
 }
