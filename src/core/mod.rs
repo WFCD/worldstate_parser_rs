@@ -1,15 +1,147 @@
 pub mod resolvable_string;
 pub mod sol_node;
 
-use std::marker::PhantomData;
+use std::{fs, marker::PhantomData, path::Path};
 
+use derive_more::Display;
 use heck::ToTitleCase;
-use serde::{Deserialize, Serialize};
+use reqwest::blocking::get;
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 
-use crate::{custom_maps::CustomMaps, manifests::Exports, wfcd_data::WorldstateData};
+use crate::{
+    BoxDynError,
+    CACHE_DIR,
+    custom_maps::CustomMaps,
+    manifests::{self, Exports},
+    wfcd_data::WorldstateData,
+};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display)]
+pub enum TranslationLanguage {
+    Czech,
+    German,
+    Spanish,
+    French,
+    Italian,
+    Korean,
+    Polish,
+    Portuguese,
+    Russian,
+    Serbian,
+    Turkish,
+    Ukrainian,
+    Chinese,
+    English,
+}
+
+impl TranslationLanguage {
+    /// Returns the 2-letter ISO folder code associated with the language.
+    ///
+    /// Returns [`None`] for english, as it makes it easier f
+    pub fn as_code(&self) -> Option<&'static str> {
+        Some(match self {
+            TranslationLanguage::Czech => "cs",
+            TranslationLanguage::German => "de",
+            TranslationLanguage::Spanish => "es",
+            TranslationLanguage::French => "fr",
+            TranslationLanguage::Italian => "it",
+            TranslationLanguage::Korean => "ko",
+            TranslationLanguage::Polish => "pl",
+            TranslationLanguage::Portuguese => "pt",
+            TranslationLanguage::Russian => "ru",
+            TranslationLanguage::Serbian => "sr",
+            TranslationLanguage::Turkish => "tr",
+            TranslationLanguage::Ukrainian => "uk",
+            TranslationLanguage::Chinese => "zh",
+            TranslationLanguage::English => return None,
+        })
+    }
+}
+
+fn get_from_cache_or_fetch<T: DeserializeOwned>(manifest: &str) -> Result<T, BoxDynError> {
+    let path = Path::new(CACHE_DIR)
+        .join(manifest)
+        .with_added_extension("json");
+
+    if let Ok(cached) = fs::read_to_string(&path) {
+        println!("Using cache at {}", path.to_str().unwrap());
+        return Ok(serde_json::from_str(&cached)?);
+    }
+
+    let item_json = get(format!(
+        "http://content.warframe.com/PublicExport/Manifest/{}",
+        manifest
+    ))?
+    .text()?;
+
+    for file in fs::read_dir(CACHE_DIR)? {
+        let file_name = file?.file_name().into_string().unwrap();
+
+        if file_name.starts_with(
+            manifest
+                .split_once('!')
+                .expect("Manifest should be valid")
+                .0,
+        ) {
+            fs::remove_file(file_name)?;
+        }
+    }
+
+    fs::write(path, &item_json)?;
+
+    Ok(serde_json::from_str(&item_json)?)
+}
+
+fn get_export() -> Result<Exports, BoxDynError> {
+    let file = get("https://origin.warframe.com/PublicExport/index_en.txt.lzma")?
+        .bytes()?
+        .to_vec();
+
+    let mut buffer: Vec<u8> = Vec::new();
+
+    lzma_rs::lzma_decompress(&mut file.as_slice(), &mut buffer).unwrap();
+
+    let data = String::from_utf8(buffer)?;
+
+    let export: manifests::PublicExportIndex = data.parse()?;
+
+    let exports = Exports {
+        export_regions: get_from_cache_or_fetch(&export.regions)?,
+    };
+
+    Ok(exports)
+}
+#[derive(Debug, Clone, PartialEq)]
+pub struct Context {
+    pub exports: Exports,
+    pub custom_maps: CustomMaps,
+    pub worldstate_data: WorldstateData,
+}
+
+impl Context {
+    pub fn new(language: TranslationLanguage) -> Result<Self, BoxDynError> {
+        let exports = get_export()?;
+        let custom_maps = CustomMaps::new(&exports);
+        let worldstate_data = WorldstateData::new(language, "data/", "drops/", "assets/")?;
+
+        Ok(Context {
+            custom_maps,
+            exports,
+            worldstate_data,
+        })
+    }
+
+    pub fn as_ref(&self) -> ContextRef<'_> {
+        ContextRef {
+            exports: &self.exports,
+            custom_maps: &self.custom_maps,
+            worldstate_data: &self.worldstate_data,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Context<'a> {
+pub struct ContextRef<'a> {
     pub exports: &'a Exports,
     pub custom_maps: &'a CustomMaps,
     pub worldstate_data: &'a WorldstateData,
@@ -113,10 +245,10 @@ impl<T> InternalPath<T> {
     }
 }
 
-impl Resolve<Context<'_>> for InternalPath<resolve_with::LanguageItems> {
+impl Resolve<ContextRef<'_>> for InternalPath<resolve_with::LanguageItems> {
     type Output = String;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         let items = &ctx.worldstate_data.language_items;
 
         items

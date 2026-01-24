@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, Resolve, sol_node::SolNode},
+    core::{ContextRef, Resolve, sol_node::SolNode},
     target_types::worldstate::fissure::{Fissure, Tier},
     worldstate_model::{Id, deserialize_mongo_date},
 };
@@ -60,10 +60,10 @@ pub(crate) struct FissureUnmapped {
     pub hard: bool,
 }
 
-impl Resolve<Context<'_>> for FissureUnmapped {
+impl Resolve<ContextRef<'_>> for FissureUnmapped {
     type Output = Fissure;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         Fissure {
             id: self.id.oid,
             node: self.node.resolve(ctx).cloned(),

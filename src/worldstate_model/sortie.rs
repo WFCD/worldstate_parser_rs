@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::{
     core::{
-        Context,
+        ContextRef,
         InternalPath,
         Resolve,
         resolvable_string::ResolvableString,
@@ -14,10 +14,10 @@ use crate::{
     worldstate_model::{Id, WorldstateMissionType, deserialize_mongo_date},
 };
 
-impl Resolve<Context<'_>> for SortieUnmapped {
+impl Resolve<ContextRef<'_>> for SortieUnmapped {
     type Output = Sortie;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         Sortie {
             activation: self.activation,
             expiry: self.expiry,
@@ -32,10 +32,10 @@ impl Resolve<Context<'_>> for SortieUnmapped {
     }
 }
 
-impl Resolve<Context<'_>> for SortieVariantUnmapped {
+impl Resolve<ContextRef<'_>> for SortieVariantUnmapped {
     type Output = SortieVariant;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         SortieVariant {
             mission_type: self.mission_type.resolve(()),
             modifier_type: self.modifier_type.resolve(ctx),

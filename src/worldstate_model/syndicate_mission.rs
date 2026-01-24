@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer};
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolve_with, sol_node::SolNode},
+    core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
     target_types::worldstate::syndicate_mission::{Job, MissionDetails, SyndicateMission},
     worldstate_model::{
         Id,
@@ -32,10 +32,10 @@ pub struct SyndicateMissionUnmapped {
     pub details: MissionDetailsUnmapped,
 }
 
-impl Resolve<Context<'_>> for SyndicateMissionUnmapped {
+impl Resolve<ContextRef<'_>> for SyndicateMissionUnmapped {
     type Output = SyndicateMission;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         SyndicateMission {
             id: self.id.oid,
             activation: self.activation,
@@ -84,12 +84,12 @@ impl<'de> Deserialize<'de> for MissionDetailsUnmapped {
     }
 }
 
-impl Resolve<(Context<'_>, WorldstateSyndicateType)> for MissionDetailsUnmapped {
+impl Resolve<(ContextRef<'_>, WorldstateSyndicateType)> for MissionDetailsUnmapped {
     type Output = MissionDetails;
 
     fn resolve(
         self,
-        (ctx, syndicate_type): (Context<'_>, WorldstateSyndicateType),
+        (ctx, syndicate_type): (ContextRef<'_>, WorldstateSyndicateType),
     ) -> Self::Output {
         match self {
             MissionDetailsUnmapped::Bounties { jobs } => MissionDetails::Bounties(

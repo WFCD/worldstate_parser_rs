@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolve_with, sol_node::SolNode},
+    core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
     target_types::worldstate::{counted_item::CountedItem, invasion::Invasion},
     worldstate_model::{
         Id,
@@ -43,10 +43,10 @@ pub struct InvasionUnmapped {
     activation: DateTime<Utc>,
 }
 
-impl Resolve<Context<'_>> for InvasionUnmapped {
+impl Resolve<ContextRef<'_>> for InvasionUnmapped {
     type Output = Invasion;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         Invasion {
             id: self.id.oid,
             attacking_faction: self.faction.resolve(()),
@@ -72,10 +72,10 @@ pub enum AttackerRewardUnmapped {
     Reward(InvasionRewardUnmapped),
 }
 
-impl Resolve<Context<'_>> for AttackerRewardUnmapped {
+impl Resolve<ContextRef<'_>> for AttackerRewardUnmapped {
     type Output = Vec<CountedItem>;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         match self {
             AttackerRewardUnmapped::Array(_) => vec![],
             AttackerRewardUnmapped::Reward(reward_unmapped) => {

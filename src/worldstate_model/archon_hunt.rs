@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{
-        Context,
+        ContextRef,
         InternalPath,
         Resolve,
         resolvable_string::ResolvableString,
@@ -35,10 +35,10 @@ pub struct ArchonHuntUnmapped {
     pub missions: Vec<MissionUnmapped>,
 }
 
-impl Resolve<Context<'_>> for ArchonHuntUnmapped {
+impl Resolve<ContextRef<'_>> for ArchonHuntUnmapped {
     type Output = ArchonHunt;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         ArchonHunt {
             id: self.id.oid,
             activation: self.activation,
@@ -59,10 +59,10 @@ pub struct MissionUnmapped {
     pub node: SolNode,
 }
 
-impl Resolve<Context<'_>> for MissionUnmapped {
+impl Resolve<ContextRef<'_>> for MissionUnmapped {
     type Output = Mission;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         Mission {
             mission_type: self.mission_type.resolve(()),
             node: self.node.resolve(ctx).cloned(),

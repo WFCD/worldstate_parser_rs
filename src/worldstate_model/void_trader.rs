@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolvable_string::ResolvableString, resolve_with},
+    core::{ContextRef, InternalPath, Resolve, resolvable_string::ResolvableString, resolve_with},
     target_types::worldstate::void_trader::{ShopItem, VoidTrader},
     worldstate_model::{Id, deserialize_mongo_date},
 };
@@ -27,10 +27,10 @@ pub struct VoidTraderUnmapped {
     pub shop: Vec<ShopItemUnmapped>,
 }
 
-impl Resolve<Context<'_>> for VoidTraderUnmapped {
+impl Resolve<ContextRef<'_>> for VoidTraderUnmapped {
     type Output = VoidTrader;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         VoidTrader {
             id: self.id.oid,
             activation: self.activation,
@@ -55,10 +55,10 @@ pub struct ShopItemUnmapped {
     pub limit: Option<u64>,
 }
 
-impl Resolve<Context<'_>> for ShopItemUnmapped {
+impl Resolve<ContextRef<'_>> for ShopItemUnmapped {
     type Output = ShopItem;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         ShopItem {
             item_type: self.item_type.resolve(ctx),
             prime_price: self.prime_price,

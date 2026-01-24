@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, Resolve},
+    core::{ContextRef, Resolve},
     target_types::worldstate::{
         alert::Alert,
         archon_hunt::ArchonHunt,
@@ -55,7 +55,7 @@ pub(crate) struct WorldStateUnmapped {
 }
 
 impl WorldStateUnmapped {
-    pub fn map_worldstate(self, ctx: Context<'_>) -> Option<WorldState> {
+    pub fn map_worldstate(self, ctx: ContextRef<'_>) -> Option<WorldState> {
         let events = self.events.resolve(());
         let fissures = self.fissures.resolve(ctx);
         let alerts = self.alerts.resolve(ctx);

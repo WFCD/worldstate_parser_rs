@@ -10,7 +10,7 @@ use serde::{
 };
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolve_with},
+    core::{ContextRef, InternalPath, Resolve, resolve_with},
     target_types::{
         faction::Faction,
         language::Language,
@@ -419,7 +419,7 @@ static GHOUL_REWARD_REGEX: LazyLock<Regex> =
 
 #[derive(Debug, Clone)]
 pub struct RotationalRewardContext<'a> {
-    pub inner_ctx: Context<'a>,
+    pub inner_ctx: ContextRef<'a>,
     pub syndicate_type: WorldstateSyndicateType,
     pub resource: String,
     pub min_level: u64,

@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolve_with, sol_node::SolNode},
+    core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
     target_types::worldstate::{
         alert::{Alert, MissionInfo, MissionReward},
         counted_item::CountedItem,
@@ -16,10 +16,10 @@ use crate::{
     },
 };
 
-impl Resolve<Context<'_>> for AlertUnmapped {
+impl Resolve<ContextRef<'_>> for AlertUnmapped {
     type Output = Alert;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         Alert {
             id: self.id.oid,
             activation: self.activation,
@@ -31,10 +31,10 @@ impl Resolve<Context<'_>> for AlertUnmapped {
     }
 }
 
-impl Resolve<Context<'_>> for MissionInfoUnmapped {
+impl Resolve<ContextRef<'_>> for MissionInfoUnmapped {
     type Output = MissionInfo;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         MissionInfo {
             mission_type: self.mission_type.resolve(()),
             faction: self.faction.resolve(()),
@@ -54,10 +54,10 @@ impl Resolve<Context<'_>> for MissionInfoUnmapped {
     }
 }
 
-impl Resolve<Context<'_>> for MissionRewardUnmapped {
+impl Resolve<ContextRef<'_>> for MissionRewardUnmapped {
     type Output = MissionReward;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         MissionReward {
             credits: self.credits,
             counted_items: self
@@ -69,10 +69,10 @@ impl Resolve<Context<'_>> for MissionRewardUnmapped {
     }
 }
 
-impl Resolve<Context<'_>> for CountedItemUnmapped {
+impl Resolve<ContextRef<'_>> for CountedItemUnmapped {
     type Output = CountedItem;
 
-    fn resolve(self, ctx: Context) -> Self::Output {
+    fn resolve(self, ctx: ContextRef) -> Self::Output {
         CountedItem {
             item_count: self.item_count,
             item_type: self.item_type.resolve(ctx),

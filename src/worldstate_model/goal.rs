@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, InternalPath, Resolve, resolve_with, sol_node::SolNode},
+    core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
     target_types::worldstate::goal::Goal,
     worldstate_model::{Id, deserialize_mongo_date, deserialize_mongo_date_opt},
 };
@@ -41,10 +41,10 @@ pub struct GoalUnmapped {
     node: SolNode,
 }
 
-impl Resolve<Context<'_>> for GoalUnmapped {
+impl Resolve<ContextRef<'_>> for GoalUnmapped {
     type Output = Goal;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         Goal {
             id: self.id.oid,
             activation: self.activation,

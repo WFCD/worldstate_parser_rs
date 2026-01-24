@@ -4,7 +4,7 @@ use heck::ToTitleCase;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    core::{Context, Resolve, resolve_with},
+    core::{ContextRef, Resolve, resolve_with},
     wfcd_data::sortie_data::Boss,
 };
 
@@ -18,10 +18,10 @@ impl<T> From<String> for ResolvableString<T> {
     }
 }
 
-impl Resolve<Context<'_>> for ResolvableString<resolve_with::sortie::Modifier> {
+impl Resolve<ContextRef<'_>> for ResolvableString<resolve_with::sortie::Modifier> {
     type Output = String;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         ctx.worldstate_data
             .sortie_data
             .modifier_types
@@ -31,18 +31,18 @@ impl Resolve<Context<'_>> for ResolvableString<resolve_with::sortie::Modifier> {
     }
 }
 
-impl<'a> Resolve<Context<'a>> for ResolvableString<resolve_with::sortie::Boss> {
+impl<'a> Resolve<ContextRef<'a>> for ResolvableString<resolve_with::sortie::Boss> {
     type Output = Option<&'a Boss>;
 
-    fn resolve(self, ctx: Context<'a>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'a>) -> Self::Output {
         ctx.worldstate_data.sortie_data.bosses.get(&self.0)
     }
 }
 
-impl Resolve<Context<'_>> for ResolvableString<resolve_with::Hubs> {
+impl Resolve<ContextRef<'_>> for ResolvableString<resolve_with::Hubs> {
     type Output = String;
 
-    fn resolve(self, ctx: Context<'_>) -> Self::Output {
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
         let hubs = &ctx.worldstate_data.hubs;
 
         hubs.get(&self.0).cloned().unwrap_or(self.0)
