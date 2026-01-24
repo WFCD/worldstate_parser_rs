@@ -57,6 +57,7 @@ pub enum InternalPathTag {
 
 pub mod resolve_with {
     pub struct LanguageItems;
+    pub struct LanguageItemsLower;
     pub struct SolNodes;
     pub struct LastSegment;
     pub struct RotationalReward;
@@ -119,6 +120,19 @@ impl Resolve<Context<'_>> for InternalPath<resolve_with::LanguageItems> {
         ctx.worldstate_data
             .language_items
             .get(&self.path)
+            .map(|item| &item.value)
+            .cloned()
+            .unwrap_or_else(|| self.to_title_case().unwrap_or(self.path))
+    }
+}
+
+impl Resolve<Context<'_>> for InternalPath<resolve_with::LanguageItemsLower> {
+    type Output = String;
+
+    fn resolve(self, ctx: Context) -> Self::Output {
+        ctx.worldstate_data
+            .language_items
+            .get(&self.path.to_lowercase())
             .map(|item| &item.value)
             .cloned()
             .unwrap_or_else(|| self.to_title_case().unwrap_or(self.path))

@@ -2,6 +2,7 @@ pub mod alert;
 pub mod archon_hunt;
 pub mod event;
 pub mod fissure;
+pub mod flash_sale;
 pub mod goal;
 pub mod sortie;
 pub mod syndicate;

@@ -41,7 +41,7 @@ impl Resolve<Context<'_>> for SyndicateMissionUnmapped {
             activation: self.activation,
             expiry: self.expiry,
             seed: self.seed,
-            tag: self.tag.resolve(()),
+            syndicate_type: self.tag.resolve(()),
             details: self.details.resolve((ctx, self.tag)),
         }
     }
@@ -123,7 +123,7 @@ impl Resolve<(Context<'_>, WorldstateSyndicateType)> for MissionDetailsUnmapped 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct JobUnmapped {
-    pub job_type: Option<String>,
+    pub job_type: Option<InternalPath<resolve_with::LanguageItemsLower>>,
 
     pub rewards: InternalPath<resolve_with::RotationalReward>,
 
@@ -149,7 +149,7 @@ impl Resolve<RotationalRewardContext<'_>> for JobUnmapped {
 
     fn resolve(self, ctx: RotationalRewardContext<'_>) -> Self::Output {
         Job {
-            job_type: self.job_type,
+            job_type: self.job_type.resolve(ctx.inner_ctx),
             rewards: self.rewards.resolve(ctx).unwrap_or_default(),
             mastery_req: self.mastery_req,
             min_enemy_level: self.min_enemy_level,

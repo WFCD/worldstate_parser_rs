@@ -24,6 +24,7 @@ pub mod alert;
 pub mod archon_hunt;
 pub mod event;
 pub mod fissure;
+pub mod flash_sale;
 pub mod goal;
 pub mod sortie;
 pub mod syndicate_mission;
@@ -311,35 +312,29 @@ impl Resolve<()> for WorldstateSyndicateType {
 
     fn resolve(self, _ctx: ()) -> Self::Output {
         match self {
-            WorldstateSyndicateType::ArbitersSyndicate => SyndicateType::ArbitersSyndicate,
-            WorldstateSyndicateType::NecraloidSyndicate => SyndicateType::NecraloidSyndicate,
-            WorldstateSyndicateType::EventSyndicate => SyndicateType::EventSyndicate,
-            WorldstateSyndicateType::CephalonSudaSyndicate => SyndicateType::CephalonSudaSyndicate,
-            WorldstateSyndicateType::KahlSyndicate => SyndicateType::KahlSyndicate,
-            WorldstateSyndicateType::NewLokaSyndicate => SyndicateType::NewLokaSyndicate,
-            WorldstateSyndicateType::NightcapJournalSyndicate => {
-                SyndicateType::NightcapJournalSyndicate
-            },
-            WorldstateSyndicateType::QuillsSyndicate => SyndicateType::QuillsSyndicate,
-            WorldstateSyndicateType::RadioLegionSyndicate => SyndicateType::RadioLegionSyndicate,
-            WorldstateSyndicateType::RadioLegion2Syndicate => SyndicateType::RadioLegion2Syndicate,
-            WorldstateSyndicateType::RadioLegion3Syndicate => SyndicateType::RadioLegion3Syndicate,
-            WorldstateSyndicateType::PerrinSyndicate => SyndicateType::PerrinSyndicate,
-            WorldstateSyndicateType::VoxSyndicate => SyndicateType::VoxSyndicate,
-            WorldstateSyndicateType::RedVeilSyndicate => SyndicateType::RedVeilSyndicate,
-            WorldstateSyndicateType::VentKidsSyndicate => SyndicateType::VentKidsSyndicate,
-            WorldstateSyndicateType::SteelMeridianSyndicate => {
-                SyndicateType::SteelMeridianSyndicate
-            },
-            WorldstateSyndicateType::EntratiLabSyndicate => SyndicateType::EntratiLabSyndicate,
-            WorldstateSyndicateType::HexSyndicate => SyndicateType::HexSyndicate,
-            WorldstateSyndicateType::EntratiSyndicate => SyndicateType::EntratiSyndicate,
-            WorldstateSyndicateType::CetusSyndicate => SyndicateType::CetusSyndicate,
-            WorldstateSyndicateType::SolarisSyndicate => SyndicateType::SolarisSyndicate,
-            WorldstateSyndicateType::ZarimanSyndicate => SyndicateType::ZarimanSyndicate,
-            WorldstateSyndicateType::RadioLegionIntermission(i) => {
-                SyndicateType::RadioLegionIntermission(i)
-            },
+            WorldstateSyndicateType::ArbitersSyndicate => SyndicateType::Arbiters,
+            WorldstateSyndicateType::NecraloidSyndicate => SyndicateType::Necraloid,
+            WorldstateSyndicateType::EventSyndicate => SyndicateType::Event,
+            WorldstateSyndicateType::CephalonSudaSyndicate => SyndicateType::CephalonSuda,
+            WorldstateSyndicateType::KahlSyndicate => SyndicateType::Kahl,
+            WorldstateSyndicateType::NewLokaSyndicate => SyndicateType::NewLoka,
+            WorldstateSyndicateType::NightcapJournalSyndicate => SyndicateType::NightcapJournal,
+            WorldstateSyndicateType::QuillsSyndicate => SyndicateType::Quills,
+            WorldstateSyndicateType::RadioLegionSyndicate => SyndicateType::RadioLegion,
+            WorldstateSyndicateType::RadioLegion2Syndicate => SyndicateType::RadioLegion2,
+            WorldstateSyndicateType::RadioLegion3Syndicate => SyndicateType::RadioLegion3,
+            WorldstateSyndicateType::PerrinSyndicate => SyndicateType::Perrin,
+            WorldstateSyndicateType::VoxSyndicate => SyndicateType::Vox,
+            WorldstateSyndicateType::RedVeilSyndicate => SyndicateType::RedVeil,
+            WorldstateSyndicateType::VentKidsSyndicate => SyndicateType::VentKids,
+            WorldstateSyndicateType::SteelMeridianSyndicate => SyndicateType::SteelMeridian,
+            WorldstateSyndicateType::EntratiLabSyndicate => SyndicateType::Cavia,
+            WorldstateSyndicateType::HexSyndicate => SyndicateType::Hex,
+            WorldstateSyndicateType::EntratiSyndicate => SyndicateType::Entrati,
+            WorldstateSyndicateType::CetusSyndicate => SyndicateType::Ostrons,
+            WorldstateSyndicateType::SolarisSyndicate => SyndicateType::SolarisUnited,
+            WorldstateSyndicateType::ZarimanSyndicate => SyndicateType::Zariman,
+            WorldstateSyndicateType::RadioLegionIntermission(i) => SyndicateType::Nightwave(i),
         }
     }
 }
@@ -462,8 +457,7 @@ impl Resolve<RotationalRewardContext<'_>> for InternalPath<resolve_with::Rotatio
         let bounty_tier = BOUNTY_REWARD_REGEX
             .captures(table)
             .and_then(|cap| cap.get(1))
-            .map(|group| group.as_str())
-            .unwrap_or("A");
+            .map(|group| group.as_str())?;
 
         match syndicate_type {
             WorldstateSyndicateType::CetusSyndicate => {

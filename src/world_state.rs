@@ -7,6 +7,7 @@ use crate::{
         archon_hunt::ArchonHunt,
         event::Event,
         fissure::Fissure,
+        flash_sale::FlashSale,
         goal::Goal,
         sortie::Sortie,
         syndicate_mission::SyndicateMission,
@@ -16,6 +17,7 @@ use crate::{
         archon_hunt::ArchonHuntUnmapped,
         event::EventUnmapped,
         fissure::FissureUnmapped,
+        flash_sale::FlashSaleUnmapped,
         goal::GoalUnmapped,
         sortie::SortieUnmapped,
         syndicate_mission::SyndicateMissionUnmapped,
@@ -40,6 +42,8 @@ pub(crate) struct WorldStateUnmapped {
     pub archon_hunt: Vec<ArchonHuntUnmapped>,
 
     pub syndicate_missions: Vec<SyndicateMissionUnmapped>,
+
+    pub flash_sales: Vec<FlashSaleUnmapped>,
 }
 
 impl WorldStateUnmapped {
@@ -51,6 +55,7 @@ impl WorldStateUnmapped {
         let goals = self.goals.resolve(ctx);
         let archon_hunt = self.archon_hunt.resolve(ctx);
         let syndicate_missions = self.syndicate_missions.resolve(ctx);
+        let flash_sales = self.flash_sales.resolve(());
 
         Some(WorldState {
             archon_hunt,
@@ -60,6 +65,7 @@ impl WorldStateUnmapped {
             alerts,
             sorties,
             syndicate_missions,
+            flash_sales,
         })
     }
 }
@@ -80,4 +86,6 @@ pub struct WorldState {
     pub archon_hunt: Vec<ArchonHunt>,
 
     pub syndicate_missions: Vec<SyndicateMission>,
+
+    pub flash_sales: Vec<FlashSale>,
 }

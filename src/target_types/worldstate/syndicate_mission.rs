@@ -35,7 +35,7 @@ pub struct SyndicateMission {
 
     pub seed: i64,
 
-    pub tag: SyndicateType,
+    pub syndicate_type: SyndicateType,
 
     #[serde(
         deserialize_with = "deserialize_null_as_empty",
