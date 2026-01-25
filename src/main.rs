@@ -12,17 +12,14 @@ use std::{error::Error, fs};
 use serde::Serialize;
 use serde_json::Serializer;
 
-use crate::{
-    core::{Context, TranslationLanguage},
-    world_state::WorldStateUnmapped,
-};
+use crate::{core::Context, world_state::WorldStateUnmapped};
 
 type BoxDynError = Box<dyn Error>;
 
 pub const CACHE_DIR: &str = "./cache";
 
 fn main() -> Result<(), BoxDynError> {
-    let context = Context::new(TranslationLanguage::English)?;
+    let context = Context::new()?;
 
     let world_state =
         serde_json::from_str::<WorldStateUnmapped>(&fs::read_to_string("worldstate.json")?)?

@@ -3,7 +3,6 @@ pub mod sol_node;
 
 use std::{fs, marker::PhantomData, path::Path};
 
-use derive_more::Display;
 use heck::ToTitleCase;
 use reqwest::blocking::get;
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
@@ -15,48 +14,6 @@ use crate::{
     manifests::{self, Exports},
     wfcd_data::WorldstateData,
 };
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Display)]
-pub enum TranslationLanguage {
-    Czech,
-    German,
-    Spanish,
-    French,
-    Italian,
-    Korean,
-    Polish,
-    Portuguese,
-    Russian,
-    Serbian,
-    Turkish,
-    Ukrainian,
-    Chinese,
-    English,
-}
-
-impl TranslationLanguage {
-    /// Returns the 2-letter ISO folder code associated with the language.
-    ///
-    /// Returns [`None`] for english, as it makes it easier f
-    pub fn as_code(&self) -> Option<&'static str> {
-        Some(match self {
-            TranslationLanguage::Czech => "cs",
-            TranslationLanguage::German => "de",
-            TranslationLanguage::Spanish => "es",
-            TranslationLanguage::French => "fr",
-            TranslationLanguage::Italian => "it",
-            TranslationLanguage::Korean => "ko",
-            TranslationLanguage::Polish => "pl",
-            TranslationLanguage::Portuguese => "pt",
-            TranslationLanguage::Russian => "ru",
-            TranslationLanguage::Serbian => "sr",
-            TranslationLanguage::Turkish => "tr",
-            TranslationLanguage::Ukrainian => "uk",
-            TranslationLanguage::Chinese => "zh",
-            TranslationLanguage::English => return None,
-        })
-    }
-}
 
 fn get_from_cache_or_fetch<T: DeserializeOwned>(manifest: &str) -> Result<T, BoxDynError> {
     let path = Path::new(CACHE_DIR)
@@ -119,10 +76,10 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new(language: TranslationLanguage) -> Result<Self, BoxDynError> {
+    pub fn new() -> Result<Self, BoxDynError> {
         let exports = get_export()?;
         let custom_maps = CustomMaps::new(&exports);
-        let worldstate_data = WorldstateData::new(language, "data/", "drops/", "assets/")?;
+        let worldstate_data = WorldstateData::new("data/", "drops/", "assets/")?;
 
         Ok(Context {
             custom_maps,
