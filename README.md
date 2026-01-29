@@ -20,6 +20,6 @@ Additionally run the [nushell script](./fetch_data.nu) which will fetch the tran
 
 Provided by the awesome [warframe-worldstate-data](https://github.com/WFCD/warframe-worldstate-data) project.
 
-## Localization
+## Internationalization (i18n)
 
-Not yet supported. Can be added if requested.
+Not yet supported. Not planning to do it any time soon, as I feel like it's not needed as much.

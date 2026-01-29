@@ -1,5 +1,5 @@
 pub mod resolvable_string;
-pub mod sol_node;
+pub(crate) mod sol_node;
 
 use std::{fs, marker::PhantomData, path::Path};
 
@@ -64,6 +64,8 @@ fn get_export() -> Result<Exports, BoxDynError> {
 
     let exports = Exports {
         export_regions: get_from_cache_or_fetch(&export.regions)?,
+        export_relic_arcane: get_from_cache_or_fetch(&export.relic_arcane)?,
+        export_customs: get_from_cache_or_fetch(&export.customs)?,
     };
 
     Ok(exports)
@@ -133,28 +135,43 @@ where
     }
 }
 
-#[derive(Debug, Clone, Serialize, PartialEq, Eq, Hash, derive_more::FromStr)]
-pub enum InternalPathTag {
-    Levels,
-    Types,
-    Language,
-    Upgrades,
-    Interface,
-
-    Unknown,
-}
-
 pub mod resolve_with {
-    pub struct LanguageItems;
-    pub struct SolNodes;
-    pub struct LastSegment;
-    pub struct RotationalReward;
-    pub struct Hubs;
+    macro_rules! define_resolvers {
+        (
+            $mod_name:ident { $( $inner:tt )* }
+            $( ; $( $rest:tt )* )?
+        ) => {
+            pub mod $mod_name {
+                define_resolvers!( $( $inner )* );
+            }
+            $( define_resolvers!( $( $rest )* ); )?
+        };
 
-    pub mod sortie {
-        pub struct Modifier;
+        (
+            $ident:ident
+            $( ; $( $rest:tt )* )?
+        ) => {
+            #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+            pub struct $ident;
 
-        pub struct Boss;
+            $( define_resolvers!( $( $rest )* ); )?
+        };
+
+        () => {};
+    }
+
+    define_resolvers! {
+        LanguageItems;
+        SolNodes;
+        LastSegment;
+        RotationalReward;
+        Hubs;
+        VaultTraderItem;
+        PrimePart;
+        sortie {
+            Modifier;
+            Boss;
+        };
     }
 }
 
@@ -168,7 +185,6 @@ pub mod resolve_with {
 #[display("{path}")]
 pub struct InternalPath<Resolver = ()> {
     pub path: String,
-    pub tag: InternalPathTag,
 
     #[serde(skip)]
     #[debug(skip)]
@@ -177,24 +193,34 @@ pub struct InternalPath<Resolver = ()> {
 
 impl<Resolver> From<String> for InternalPath<Resolver> {
     fn from(path: String) -> Self {
-        let tag = path
-            .split('/')
-            .filter(|segment| !segment.is_empty())
-            .nth(1)
-            .and_then(|s| s.parse().ok())
-            .unwrap_or(InternalPathTag::Unknown);
-
         Self {
             path,
-            tag,
             _p: PhantomData,
         }
     }
 }
 
 impl<T> InternalPath<T> {
+    pub fn new<S>(s: String) -> InternalPath<S> {
+        InternalPath {
+            path: s,
+            _p: PhantomData,
+        }
+    }
+
+    pub fn cast<S>(self) -> InternalPath<S> {
+        InternalPath {
+            path: self.path,
+            _p: PhantomData,
+        }
+    }
+
+    pub fn last_segment(&self) -> Option<&str> {
+        self.path.split('/').next_back()
+    }
+
     pub fn to_title_case(&self) -> Option<String> {
-        self.path.split('/').next_back().map(|s| s.to_title_case())
+        self.last_segment().map(|s| s.to_title_case())
     }
 
     pub fn into_title_case_or_path(self) -> String {
@@ -224,19 +250,143 @@ impl Resolve<()> for InternalPath<resolve_with::LastSegment> {
     }
 }
 
+fn split_camel_case(s: &str) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut last_index = 0;
+
+    for (i, c) in s.char_indices() {
+        if c.is_uppercase() && i > 0 {
+            parts.push(&s[last_index..i]);
+            last_index = i;
+        }
+    }
+
+    if last_index < s.len() {
+        parts.push(&s[last_index..]);
+    }
+
+    parts
+}
+
+impl Resolve<()> for InternalPath<resolve_with::PrimePart> {
+    type Output = String;
+
+    fn resolve(self, _ctx: ()) -> Self::Output {
+        resolve::prime_part(self.cast())
+    }
+}
+
+impl Resolve<ContextRef<'_>> for InternalPath<resolve_with::VaultTraderItem> {
+    type Output = String;
+
+    fn resolve(self, ctx: ContextRef<'_>) -> Self::Output {
+        match &self.path {
+            path if path.contains("Weapons") => resolve::prime_part(self.cast()),
+            path if path.contains("Powersuits") => {
+                InternalPath::<resolve_with::LanguageItems>::resolve(self.cast(), ctx)
+            },
+            path if path.contains("Upgrades/Skins") => resolve::skins(self.cast(), ctx),
+            path if path.contains("Projections") => resolve::relics(self.cast(), ctx),
+            path if path.contains("MegaPrimeVault") => resolve::prime_vault_pkg(self.cast()),
+
+            _ => self
+                .last_segment()
+                .map(|s| s.to_title_case())
+                .unwrap_or_default(),
+        }
+    }
+}
+
+mod resolve {
+    use heck::ToTitleCase;
+
+    use crate::core::{ContextRef, InternalPath, split_camel_case};
+
+    const WEAPON_ARCHTYPE_REMOVAL_LIST: &[&str] = &[
+        "Dagger",
+        "Weapon",
+        "Sniper",
+        "Bow",
+        "Launcher",
+        "Sword",
+        "Dual Daggers",
+        "Claws",
+        "Nikana",
+    ];
+
+    pub fn prime_part(path: InternalPath) -> String {
+        let mut parts = split_camel_case(match path.last_segment() {
+            Some(segment) => segment,
+            None => return "".to_string(),
+        });
+
+        // swap leading prime, e.g. `Prime Knell` -> `Knell Prime`
+        if parts.len() >= 2 && parts[0] == "Prime" {
+            // for stuff like `Prime Dual Keres` -> `Dual Keres Prime`
+            parts.rotate_left(1);
+        }
+
+        // strip trailing weapon archtype info
+        if let Some(index) = parts
+            .iter()
+            .position(|x| WEAPON_ARCHTYPE_REMOVAL_LIST.contains(x))
+        {
+            parts.remove(index);
+        }
+
+        parts.join(" ")
+    }
+
+    pub fn skins(path: InternalPath, ctx: ContextRef<'_>) -> String {
+        if let Some(entry) = ctx
+            .custom_maps
+            .unique_to_customs_entry
+            .get(&path.path.replace("/Lotus/StoreItems/", "/Lotus/Upgrades/"))
+        {
+            entry.name.clone()
+        } else if let Some(entry) = ctx.worldstate_data.language_items.get(&path.path) {
+            entry.value.clone()
+        } else {
+            path.last_segment().unwrap_or_default().to_title_case()
+        }
+    }
+
+    pub fn relics(path: InternalPath, ctx: ContextRef<'_>) -> String {
+        ctx.custom_maps
+            .relic_uniq_to_relic
+            .get(&path.path.replace("/StoreItems", ""))
+            .map(|relic| relic.name.clone())
+            .unwrap_or_default()
+    }
+
+    pub fn prime_vault_pkg(path: InternalPath) -> String {
+        let mut last_segment = match path.last_segment() {
+            Some(segment) => segment,
+            None => return path.path,
+        };
+
+        if last_segment.starts_with("MPV") {
+            last_segment = &last_segment[3..];
+        }
+
+        let mut split = split_camel_case(last_segment);
+
+        if last_segment.ends_with("DualPack") {
+            split.insert(1, "&");
+        }
+
+        split.join(" ")
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::{
-        BoxDynError,
-        core::{InternalPath, InternalPathTag},
-    };
+    use crate::{BoxDynError, core::InternalPath};
 
     #[test]
     fn test_from_internal_path() -> Result<(), BoxDynError> {
         let internal_path: InternalPath =
             serde_json::from_str("\"/Lotus/Levels/Proc/Orokin/OrokinTowerMobileDefense\"")?;
-
-        assert_eq!(internal_path.tag, InternalPathTag::Levels);
 
         assert_eq!(
             internal_path.to_title_case().unwrap(),

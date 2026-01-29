@@ -1,6 +1,10 @@
 use std::{collections::HashMap, str::FromStr};
 
-use crate::manifest_entries::manifest_node::ManifestNode;
+use crate::manifest_entries::{
+    manifest_custom::ManifestCustom,
+    manifest_node::ManifestNode,
+    manifest_relic_arcane::RelicArcane,
+};
 
 #[derive(Debug)]
 pub struct PublicExportIndex {
@@ -64,7 +68,8 @@ impl FromStr for PublicExportIndex {
 
 all_the_exports! {
     struct ExportRegions(ManifestNode);
-
+    struct ExportRelicArcane(RelicArcane);
+    struct ExportCustoms(ManifestCustom);
 }
 
 macro_rules! all_the_exports {

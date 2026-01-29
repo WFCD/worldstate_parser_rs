@@ -31,6 +31,7 @@ pub mod invasion;
 pub mod sortie;
 pub mod syndicate_mission;
 pub mod void_trader;
+pub mod vault_trader;
 
 pub fn deserialize_mongo_date<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
 where

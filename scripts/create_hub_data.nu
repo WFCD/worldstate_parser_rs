@@ -10,7 +10,7 @@ def main [
 
     open $source
         | transpose key val
-        | where key ends-with "HUB"
+        | where key has "HUB"
         | update val {
             $in.value | str replace --regex ' \(.*\)$' ''
         }

@@ -12,7 +12,8 @@ use crate::{
         invasion::Invasion,
         sortie::Sortie,
         syndicate_mission::SyndicateMission,
-        void_trader::VoidTrader,
+        vault_trader::VaultTrader,
+        void_trader::VoidTraderState,
     },
     worldstate_model::{
         alert::AlertUnmapped,
@@ -24,7 +25,8 @@ use crate::{
         invasion::InvasionUnmapped,
         sortie::SortieUnmapped,
         syndicate_mission::SyndicateMissionUnmapped,
-        void_trader::VoidTraderUnmapped,
+        vault_trader::VaultTraderUnmapped,
+        void_trader::VoidTraderStateUnmapped,
     },
 };
 
@@ -51,7 +53,9 @@ pub(crate) struct WorldStateUnmapped {
 
     pub invasions: Vec<InvasionUnmapped>,
 
-    pub void_traders: Vec<VoidTraderUnmapped>,
+    pub void_traders: Vec<VoidTraderStateUnmapped>,
+
+    pub prime_vault_traders: Vec<VaultTraderUnmapped>,
 }
 
 impl WorldStateUnmapped {
@@ -66,6 +70,7 @@ impl WorldStateUnmapped {
         let flash_sales = self.flash_sales.resolve(());
         let invasions = self.invasions.resolve(ctx);
         let void_trader = self.void_traders.resolve(ctx).into_iter().next();
+        let vault_trader = self.prime_vault_traders.resolve(ctx).into_iter().next();
 
         Some(WorldState {
             archon_hunt,
@@ -78,6 +83,7 @@ impl WorldStateUnmapped {
             flash_sales,
             invasions,
             void_trader,
+            vault_trader,
         })
     }
 }
@@ -103,5 +109,7 @@ pub struct WorldState {
 
     pub invasions: Vec<Invasion>,
 
-    pub void_trader: Option<VoidTrader>,
+    pub void_trader: Option<VoidTraderState>,
+
+    pub vault_trader: Option<VaultTrader>,
 }
