@@ -381,7 +381,10 @@ mod resolve {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BoxDynError, core::InternalPath};
+    use crate::{
+        BoxDynError,
+        core::{Context, InternalPath, Resolve, resolve_with},
+    };
 
     #[test]
     fn test_from_internal_path() -> Result<(), BoxDynError> {
@@ -392,6 +395,19 @@ mod tests {
             internal_path.to_title_case().unwrap(),
             "Orokin Tower Mobile Defense"
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_language_items() -> Result<(), BoxDynError> {
+        let internal_path: InternalPath<resolve_with::LanguageItems> = serde_json::from_str(
+            "\"/Lotus/StoreItems/Types/Recipes/WarframeRecipes/DagathChassisComponent\"",
+        )?;
+
+        let context = Context::new().unwrap();
+
+        dbg!(internal_path.resolve(context.as_ref()));
 
         Ok(())
     }

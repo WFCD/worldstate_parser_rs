@@ -1415,7 +1415,9 @@
                 "difficulty": 1,
                 "missionReward": {
                     "credits": 10000,
-                    "countedItems": []
+                    "items": [
+                        "Dagath Chassis Component"
+                    ]
                 },
                 "descText": "Gift From The Lotus"
             },
@@ -1448,7 +1450,9 @@
                 "difficulty": 1,
                 "missionReward": {
                     "credits": 10000,
-                    "countedItems": []
+                    "items": [
+                        "Dagath Helmet Component"
+                    ]
                 },
                 "descText": "Gift From The Lotus"
             },
@@ -1480,7 +1484,9 @@
                 "difficulty": 1,
                 "missionReward": {
                     "credits": 10000,
-                    "countedItems": []
+                    "items": [
+                        "Dagath Blueprint"
+                    ]
                 },
                 "descText": "Gift From The Lotus"
             },
@@ -5911,7 +5917,7 @@
         "activation": "2026-02-06T14:00:00Z",
         "expiry": "2026-02-08T14:00:00Z",
         "character": "Baro'Ki Teel",
-        "nextNodeVisited": "Strata Relay"
+        "nextLocation": "Strata Relay"
     },
     "vaultTrader": {
         "id": "631f8c4ac36af423770eaa97",
