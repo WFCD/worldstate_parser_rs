@@ -43,7 +43,7 @@ impl Resolve<ContextRef<'_>> for ArchonHuntUnmapped {
             id: self.id.oid,
             activation: self.activation,
             expiry: self.expiry,
-            reward: self.reward.resolve(()),
+            reward_pool: ctx.worldstate_data.archon_hunt_rewards.clone(),
             seed: self.seed,
             boss: self.boss.resolve(ctx).map(|boss| &boss.name).cloned(),
             missions: self.missions.resolve(ctx),

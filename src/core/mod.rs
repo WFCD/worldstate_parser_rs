@@ -81,7 +81,7 @@ impl Context {
     pub fn new() -> Result<Self, BoxDynError> {
         let exports = get_export()?;
         let custom_maps = CustomMaps::new(&exports);
-        let worldstate_data = WorldstateData::new("data/", "drops/", "assets/")?;
+        let worldstate_data = WorldstateData::new("data/", "drops/", "assets/", "assets_manual/")?;
 
         Ok(Context {
             custom_maps,

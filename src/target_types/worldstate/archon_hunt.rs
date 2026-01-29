@@ -1,9 +1,12 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::target_types::{mission_type::MissionType, node::Node};
+use crate::{
+    target_types::{mission_type::MissionType, node::Node},
+    wfcd_data::bounty_rewards::DropItem,
+};
 
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArchonHunt {
     pub id: String,
@@ -12,7 +15,7 @@ pub struct ArchonHunt {
 
     pub expiry: DateTime<Utc>,
 
-    pub reward: String,
+    pub reward_pool: Vec<DropItem>,
 
     pub seed: i64,
 

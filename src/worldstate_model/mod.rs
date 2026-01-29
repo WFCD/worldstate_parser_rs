@@ -30,8 +30,8 @@ pub mod goal;
 pub mod invasion;
 pub mod sortie;
 pub mod syndicate_mission;
-pub mod void_trader;
 pub mod vault_trader;
+pub mod void_trader;
 
 pub fn deserialize_mongo_date<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
 where
@@ -480,11 +480,7 @@ impl Resolve<RotationalRewardContext<'_>> for InternalPath<resolve_with::Rotatio
                     tier = bounty_tier;
                 }
 
-                lookup_bounty(
-                    &level_string,
-                    tier,
-                    &ctx.worldstate_data.bounty_rewards.cetus,
-                )
+                lookup_bounty(&level_string, tier, &ctx.worldstate_data.rewards.cetus)
             },
 
             WorldstateSyndicateType::EntratiSyndicate => {
@@ -498,7 +494,7 @@ impl Resolve<RotationalRewardContext<'_>> for InternalPath<resolve_with::Rotatio
                 lookup_bounty(
                     &level_string,
                     bounty_tier,
-                    &ctx.worldstate_data.bounty_rewards.deimos,
+                    &ctx.worldstate_data.rewards.deimos,
                 )
             },
 
@@ -508,7 +504,7 @@ impl Resolve<RotationalRewardContext<'_>> for InternalPath<resolve_with::Rotatio
                 lookup_bounty(
                     &level_string,
                     bounty_tier,
-                    &ctx.worldstate_data.bounty_rewards.solaris,
+                    &ctx.worldstate_data.rewards.solaris,
                 )
             },
 

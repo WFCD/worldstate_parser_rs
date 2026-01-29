@@ -1,9 +1,12 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::target_types::{mission_type::MissionType, node::Node};
+use crate::{
+    target_types::{mission_type::MissionType, node::Node},
+    wfcd_data::bounty_rewards::DropItem,
+};
 
-#[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, Deserialize, Serialize, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Sortie {
     pub id: String,
@@ -17,6 +20,8 @@ pub struct Sortie {
     pub seed: u64,
 
     pub boss: Option<String>,
+
+    pub reward_pool: Vec<DropItem>,
 
     pub extra_drops: Vec<serde_json::Value>,
 

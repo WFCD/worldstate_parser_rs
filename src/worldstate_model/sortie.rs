@@ -28,6 +28,7 @@ impl Resolve<ContextRef<'_>> for SortieUnmapped {
             seed: self.seed,
             twitter: self.twitter,
             variants: self.variants.resolve(ctx),
+            reward_pool: ctx.worldstate_data.rewards.sortie_rewards.clone(),
         }
     }
 }

@@ -21,6 +21,9 @@ pub struct BountyRewards {
 
     #[serde(rename(deserialize = "hexRewards"))]
     pub hex: Vec<Bounty>,
+
+    #[serde(rename(deserialize = "sortieRewards"))]
+    pub sortie_rewards: Vec<DropItem>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
@@ -37,9 +40,6 @@ pub struct Bounty {
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct DropItem {
-    #[serde(rename(deserialize = "_id"), skip_serializing)]
-    pub id: String,
-
     pub item_name: String,
 
     pub rarity: String,

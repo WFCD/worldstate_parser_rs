@@ -1502,6 +1502,93 @@
             "reward": "Sortie Rewards",
             "seed": 62485,
             "boss": "Councilor Vay Hek",
+            "rewardPool": [
+                {
+                    "itemName": "Ayatan Anasa Sculpture",
+                    "rarity": "Uncommon",
+                    "chance": 28.0
+                },
+                {
+                    "itemName": "4000 Endo",
+                    "rarity": "Uncommon",
+                    "chance": 12.0
+                },
+                {
+                    "itemName": "Forma",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Exilus Warframe Adapter",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Orokin Reactor Blueprint",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Orokin Catalyst Blueprint",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Legendary Core",
+                    "rarity": "Legendary",
+                    "chance": 0.19
+                },
+                {
+                    "itemName": "6000X Kuva",
+                    "rarity": "Uncommon",
+                    "chance": 12.0
+                },
+                {
+                    "itemName": "Affinity Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Resource Drop Chance Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Mod Drop Chance Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Rifle Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 7.0
+                },
+                {
+                    "itemName": "Pistol Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 7.0
+                },
+                {
+                    "itemName": "Shotgun Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 2.2
+                },
+                {
+                    "itemName": "Melee Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 9.8
+                },
+                {
+                    "itemName": "Zaw Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 1.0
+                },
+                {
+                    "itemName": "Kitgun Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 1.0
+                }
+            ],
             "extraDrops": [],
             "variants": [
                 {
@@ -1588,7 +1675,93 @@
             "id": "6976aafe7526de5ee5ce5f48",
             "activation": "2026-01-26T00:00:00Z",
             "expiry": "2026-02-02T00:00:00Z",
-            "reward": "Archon Sortie Rewards",
+            "rewardPool": [
+                {
+                    "itemName": "Ayatan Anasa Sculpture",
+                    "rarity": "Common",
+                    "chance": 28.0
+                },
+                {
+                    "itemName": "Endo x8,000",
+                    "rarity": "Uncommon",
+                    "chance": 12.1
+                },
+                {
+                    "itemName": "Kuva x12,000",
+                    "rarity": "Uncommon",
+                    "chance": 12.0
+                },
+                {
+                    "itemName": "Melee Riven Mod",
+                    "rarity": "Uncommon",
+                    "chance": 8.14
+                },
+                {
+                    "itemName": "Pistol Riven Mod",
+                    "rarity": "Uncommon",
+                    "chance": 7.61
+                },
+                {
+                    "itemName": "Rifle Riven Mod",
+                    "rarity": "Uncommon",
+                    "chance": 6.79
+                },
+                {
+                    "itemName": "Affinity Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Mod Drop Chance Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Resource Drop Chance Booster",
+                    "rarity": "Rare",
+                    "chance": 3.27
+                },
+                {
+                    "itemName": "Orokin Catalyst Blueprint",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Orokin Reactor Blueprint",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Exilus Warframe Adapter",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Forma x3",
+                    "rarity": "Rare",
+                    "chance": 2.5
+                },
+                {
+                    "itemName": "Kitgun Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 2.0
+                },
+                {
+                    "itemName": "Zaw Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 2.0
+                },
+                {
+                    "itemName": "Shotgun Riven Mod",
+                    "rarity": "Rare",
+                    "chance": 1.36
+                },
+                {
+                    "itemName": "Legendary Core",
+                    "rarity": "Legendary",
+                    "chance": 0.18
+                }
+            ],
             "seed": 37493,
             "boss": "Archon Nira",
             "missions": [
