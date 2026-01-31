@@ -5,6 +5,7 @@ use crate::{
     target_types::worldstate::{
         alert::Alert,
         archon_hunt::ArchonHunt,
+        calendar::Calendar,
         circuit::Circuit,
         daily_deal::DailyDeal,
         event::Event,
@@ -22,6 +23,7 @@ use crate::{
     worldstate_model::{
         alert::AlertUnmapped,
         archon_hunt::ArchonHuntUnmapped,
+        calendar::CalendarUnmapped,
         circuit::CircuitUnmapped,
         daily_deal::DailyDealUnmapped,
         event::EventUnmapped,
@@ -74,6 +76,9 @@ pub(crate) struct WorldStateUnmapped {
 
     #[serde(rename = "SeasonInfo")]
     pub nightwave: NightwaveUnmapped,
+
+    #[serde(rename = "KnownCalendarSeasons")]
+    pub calendars: Vec<CalendarUnmapped>,
 }
 
 impl WorldStateUnmapped {
@@ -93,6 +98,7 @@ impl WorldStateUnmapped {
         let daily_deals = self.daily_deals.resolve(ctx);
         let circuit = self.circuit.resolve(());
         let nightwave = self.nightwave.resolve(ctx);
+        let calendar = self.calendars.resolve(ctx).into_iter().next();
 
         Some(WorldState {
             archon_hunt,
@@ -110,6 +116,7 @@ impl WorldStateUnmapped {
             daily_deals,
             circuit,
             nightwave,
+            calendar,
         })
     }
 }
@@ -146,4 +153,6 @@ pub struct WorldState {
     pub circuit: Circuit,
 
     pub nightwave: Nightwave,
+
+    pub calendar: Option<Calendar>,
 }

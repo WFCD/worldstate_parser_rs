@@ -35,6 +35,7 @@ pub struct WorldstateData {
     pub rewards: BountyRewards,
     pub archon_hunt_rewards: Vec<DropItem>,
     pub hubs: HashMap<String, String>,
+    pub archon_shards_store_item: HashMap<String, String>,
 }
 
 impl WorldstateData {
@@ -45,6 +46,9 @@ impl WorldstateData {
         manual_assets_dir: impl AsRef<Path>,
     ) -> Result<Self, WorldstateDataError> {
         let data_dir = data_dir.as_ref();
+        let drop_dir = drop_dir.as_ref();
+        let assets_dir = assets_dir.as_ref();
+        let manual_assets_dir = manual_assets_dir.as_ref();
 
         Ok(Self {
             language_items: init(data_dir, "languages")?,
@@ -52,6 +56,7 @@ impl WorldstateData {
             rewards: init(drop_dir, "data")?,
             hubs: init(assets_dir, "relays")?,
             archon_hunt_rewards: init(manual_assets_dir, "archonHuntRewards")?,
+            archon_shards_store_item: init(manual_assets_dir, "archonShardsStoreItem")?,
         })
     }
 }

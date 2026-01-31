@@ -7716,7 +7716,7 @@
                 "activation": "2026-01-27T00:00:00Z",
                 "expiry": "2026-01-30T00:00:00Z",
                 "title": "Swordsman",
-                "desc": "Complete a Mission with only a Melee Weapon equipped"
+                "description": "Complete a Mission with only a Melee Weapon equipped"
             },
             {
                 "id": "001700140000000000000192",
@@ -7725,7 +7725,7 @@
                 "activation": "2026-01-28T00:00:00Z",
                 "expiry": "2026-01-31T00:00:00Z",
                 "title": "The Personal Touch",
-                "desc": "Place 1 decoration in your Orbiter"
+                "description": "Place 1 decoration in your Orbiter"
             },
             {
                 "id": "001700140000000000000193",
@@ -7734,7 +7734,7 @@
                 "activation": "2026-01-29T00:00:00Z",
                 "expiry": "2026-02-01T00:00:00Z",
                 "title": "Poisoner",
-                "desc": "Kill 150 Enemies with Toxin Damage"
+                "description": "Kill 150 Enemies with Toxin Damage"
             },
             {
                 "id": "001700140000000000000183",
@@ -7743,7 +7743,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Mission Complete XIV",
-                "desc": "Complete any 15 missions"
+                "description": "Complete any 15 missions"
             },
             {
                 "id": "001700140000000000000184",
@@ -7752,7 +7752,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Eximus Eliminator XIV",
-                "desc": "Kill 30 Eximus"
+                "description": "Kill 30 Eximus"
             },
             {
                 "id": "001700140000000000000185",
@@ -7761,7 +7761,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Not a Warning Shot XIV",
-                "desc": "Kill 500 Enemies"
+                "description": "Kill 500 Enemies"
             },
             {
                 "id": "001700140000000000000186",
@@ -7770,7 +7770,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Supporter",
-                "desc": "Complete 5 Syndicate misions"
+                "description": "Complete 5 Syndicate misions"
             },
             {
                 "id": "001700140000000000000187",
@@ -7779,7 +7779,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Unlock Relics",
-                "desc": "Unlock 3 Relics"
+                "description": "Unlock 3 Relics"
             },
             {
                 "id": "001700140000000000000188",
@@ -7788,7 +7788,7 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Night Terror",
-                "desc": "Complete 5 Nightmare missions of any type"
+                "description": "Complete 5 Nightmare missions of any type"
             },
             {
                 "id": "001700140000000000000189",
@@ -7797,8 +7797,155 @@
                 "activation": "2026-01-26T00:00:00Z",
                 "expiry": "2026-02-02T00:00:00Z",
                 "title": "Nothing but Profit",
-                "desc": "Kill The Exploiter Orb"
+                "description": "Kill The Exploiter Orb"
             }
         ]
+    },
+    "calendar": {
+        "activation": "2026-01-26T00:00:00Z",
+        "expiry": "2026-02-02T00:00:00Z",
+        "days": [
+            {
+                "day": "1999-07-01T00:00:00Z",
+                "challenge": {
+                    "title": "Shock and Awe",
+                    "description": "Kill 75 Scaldra Troops with Abilities"
+                }
+            },
+            {
+                "day": "1999-07-10T00:00:00Z"
+            },
+            {
+                "day": "1999-07-16T00:00:00Z",
+                "rewards": [
+                    "Forma Blueprint",
+                    "Secondary Arcane Adapter"
+                ]
+            },
+            {
+                "day": "1999-07-23T00:00:00Z",
+                "challenge": {
+                    "title": "By The Blade",
+                    "description": "Kill 150 Enemies with Melee Weapons"
+                }
+            },
+            {
+                "day": "1999-07-25T00:00:00Z",
+                "rewards": [
+                    "Azure Archon Shard",
+                    "Forma"
+                ]
+            },
+            {
+                "day": "1999-07-28T00:00:00Z",
+                "upgrades": [
+                    {
+                        "title": "Psionic Feedback",
+                        "description": "On Damaged 10% chance to set off a 250 damage, 5m radius blast of radiation on taking damage."
+                    },
+                    {
+                        "title": "Toxic Shot",
+                        "description": "Add 25% Gas Status Chance to Primary and Secondary weapons."
+                    },
+                    {
+                        "title": "Bottled Lightning",
+                        "description": "Add 25% Status Damage and Electricity Status Chance to all weapons."
+                    }
+                ]
+            },
+            {
+                "day": "1999-08-06T00:00:00Z",
+                "challenge": {
+                    "title": "Make it personal",
+                    "description": "Kill 300 Scaldra Troops with Melee Weapons"
+                }
+            },
+            {
+                "day": "1999-08-07T00:00:00Z",
+                "rewards": [
+                    "Orokin Reactor Blueprint",
+                    "Forma"
+                ]
+            },
+            {
+                "day": "1999-08-08T00:00:00Z",
+                "upgrades": [
+                    {
+                        "title": "Friendly Fallout",
+                        "description": "Attacks from Specters or Companions have a 25% chance to cause Radiation Status."
+                    },
+                    {
+                        "title": "Exploding Health Orbs",
+                        "description": null
+                    },
+                    {
+                        "title": "Shared Free Ability Every X Casts",
+                        "description": null
+                    }
+                ]
+            },
+            {
+                "day": "1999-08-12T00:00:00Z",
+                "challenge": {
+                    "title": "Calendar Kill Eximus Medium",
+                    "description": null
+                }
+            },
+            {
+                "day": "1999-08-29T00:00:00Z",
+                "rewards": [
+                    "Melee Arcane Adapter",
+                    "Primary Arcane Adapter"
+                ]
+            },
+            {
+                "day": "1999-09-01T00:00:00Z",
+                "challenge": {
+                    "title": "Calendar Kill Techrot Enemies With Abilities Hard",
+                    "description": null
+                }
+            },
+            {
+                "day": "1999-09-13T00:00:00Z",
+                "rewards": [
+                    "Riven",
+                    "Arcane Enhancements"
+                ]
+            },
+            {
+                "day": "1999-09-17T00:00:00Z",
+                "upgrades": [
+                    {
+                        "title": "Heavy Mags",
+                        "description": "Increase magazine capacity by 25%"
+                    },
+                    {
+                        "title": "Harden Up",
+                        "description": "Increases Overshield cap by 50%. Kills grant 50 shields."
+                    },
+                    {
+                        "title": "Got Your Back",
+                        "description": "Specters and companions gain +250% damage."
+                    }
+                ]
+            },
+            {
+                "day": "1999-09-21T00:00:00Z",
+                "challenge": {
+                    "title": "Demonstration of power",
+                    "description": "Kill 500 Enemies with Abilities"
+                }
+            },
+            {
+                "day": "1999-09-29T00:00:00Z",
+                "rewards": [
+                    "3 Day Affinity Booster",
+                    "Aura Forma Blueprint"
+                ]
+            }
+        ],
+        "season": "CST_SUMMER",
+        "yearIteration": 14,
+        "version": 19
     }
 }

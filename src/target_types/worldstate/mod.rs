@@ -1,5 +1,6 @@
 pub mod alert;
 pub mod archon_hunt;
+pub mod calendar;
 pub mod circuit;
 pub mod counted_item;
 pub mod daily_deal;
