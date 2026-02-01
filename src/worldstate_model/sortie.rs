@@ -69,6 +69,7 @@ pub struct SortieUnmapped {
 
     pub variants: Vec<SortieVariantUnmapped>,
 
+    #[serde(default)]
     pub twitter: bool,
 }
 
