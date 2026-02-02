@@ -10,7 +10,7 @@ use crate::{
         resolve_with,
         sol_node::SolNode,
     },
-    target_types::worldstate::sortie::{Sortie, SortieVariant},
+    target_types::worldstate_types::sortie::{Sortie, SortieVariant},
     worldstate_model::{Id, WorldstateMissionType, deserialize_mongo_date},
 };
 

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::Resolve,
-    target_types::worldstate::event::{Event, EventLink, EventMessage},
+    target_types::worldstate_types::event::{Event, EventLink, EventMessage},
     worldstate_model::{Id, WorldstateLanguage, deserialize_mongo_date_opt},
 };
 

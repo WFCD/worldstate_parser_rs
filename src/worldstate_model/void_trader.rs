@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolvable_string::ResolvableString, resolve_with},
-    target_types::worldstate::void_trader::{
+    target_types::worldstate_types::void_trader::{
         ArrivedVoidTrader,
         DepartedVoidTrader,
         ShopItem,

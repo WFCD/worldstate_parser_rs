@@ -4,4 +4,4 @@ pub mod language;
 pub mod mission_type;
 pub mod node;
 pub mod relic;
-pub mod worldstate;
+pub mod worldstate_types;

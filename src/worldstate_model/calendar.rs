@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with},
-    target_types::worldstate::calendar::{Calendar, CalendarDay, CalendarEvent, CalendarSeason},
+    target_types::worldstate_types::calendar::{Calendar, CalendarDay, CalendarEvent, CalendarSeason},
     worldstate_model::deserialize_mongo_date,
 };
 

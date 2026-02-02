@@ -3,7 +3,7 @@ use serde::{Deserialize, Deserializer};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
-    target_types::worldstate::syndicate_mission::{
+    target_types::worldstate_types::syndicate_mission::{
         SyndicateJob,
         SyndicateMission,
         SyndicateMissionDetails,

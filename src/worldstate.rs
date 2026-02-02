@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     ContextProvider,
     core::{ContextRef, Resolve},
-    target_types::worldstate::{
+    target_types::worldstate_types::{
         alert::Alert,
         archimedea::ArchimedeaRoot,
         archon_hunt::ArchonHunt,
@@ -42,29 +42,6 @@ use crate::{
         void_trader::VoidTraderStateUnmapped,
     },
 };
-
-#[derive(Debug, thiserror::Error)]
-#[error(transparent)]
-pub enum WorldstateError {
-    WorldstateDeserialization(#[from] serde_json::Error),
-
-    Provider(Box<dyn std::error::Error + Send + Sync>),
-}
-
-pub async fn from_str<C>(s: &str, provider: C) -> Result<WorldState, WorldstateError>
-where
-    C: ContextProvider,
-    C::Err: Into<Box<dyn std::error::Error + Send + Sync>>,
-{
-    let ws_unmapped = serde_json::from_str::<WorldStateUnmapped>(s)?;
-
-    let ctx = provider
-        .get_ctx()
-        .await
-        .map_err(|err| WorldstateError::Provider(err.into()))?;
-
-    Ok(ws_unmapped.map(ctx.as_ref()))
-}
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(rename_all = "PascalCase")]
@@ -152,6 +129,14 @@ impl WorldStateUnmapped {
     }
 }
 
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub enum WorldstateError {
+    WorldstateDeserialization(#[from] serde_json::Error),
+
+    Provider(Box<dyn std::error::Error + Send + Sync>),
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct WorldState {
@@ -188,4 +173,21 @@ pub struct WorldState {
     pub calendar: Option<Calendar>,
 
     pub archimedea: ArchimedeaRoot,
+}
+
+impl WorldState {
+    pub async fn from_str<C>(s: &str, provider: C) -> Result<WorldState, WorldstateError>
+    where
+        C: ContextProvider,
+        C::Err: Into<Box<dyn std::error::Error + Send + Sync>>,
+    {
+        let ws_unmapped = serde_json::from_str::<WorldStateUnmapped>(s)?;
+
+        let ctx = provider
+            .get_ctx()
+            .await
+            .map_err(|err| WorldstateError::Provider(err.into()))?;
+
+        Ok(ws_unmapped.map(ctx.as_ref()))
+    }
 }

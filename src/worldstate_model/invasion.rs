@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
-    target_types::worldstate::{counted_item::CountedItem, invasion::Invasion},
+    target_types::worldstate_types::{counted_item::CountedItem, invasion::Invasion},
     worldstate_model::{
         Id,
         WorldstateFaction,

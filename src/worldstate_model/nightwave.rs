@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with},
-    target_types::worldstate::nightwave::{
+    target_types::worldstate_types::nightwave::{
         Nightwave,
         NightwaveChallenge,
         NightwaveChallengeInfo,

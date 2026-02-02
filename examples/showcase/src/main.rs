@@ -2,9 +2,9 @@ use std::{fs, path::Path};
 
 use tracing_subscriber::filter::LevelFilter;
 use worldstate_parser::{
+    WorldState,
     default_context_provider::{DefaultContextProvider, PathContext},
     default_data_fetcher::CacheStrategy,
-    worldstate,
 };
 
 #[tokio::main]
@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         assets_dir: Path::new("assets/"),
     });
 
-    let world_state = worldstate::from_str(&world_state_str, provider).await?;
+    let world_state = WorldState::from_str(&world_state_str, provider).await?;
 
     fs::write(
         "worldstate_parsed.json",

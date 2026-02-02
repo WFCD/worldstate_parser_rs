@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, Resolve, sol_node::SolNode},
-    target_types::worldstate::void_storm::VoidStorm,
+    target_types::worldstate_types::void_storm::VoidStorm,
     worldstate_model::{Id, deserialize_mongo_date, fissure::TierUnmapped},
 };
 

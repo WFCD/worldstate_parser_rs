@@ -15,7 +15,7 @@ use crate::{
         faction::Faction,
         language::Language,
         mission_type::MissionType,
-        worldstate::syndicate::SyndicateType,
+        worldstate_types::syndicate::SyndicateType,
     },
     wfcd_data::bounty_rewards::{Bounty, DropItem},
 };

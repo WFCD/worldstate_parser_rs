@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{InternalPath, Resolve, resolve_with},
-    target_types::worldstate::flash_sale::FlashSale,
+    target_types::worldstate_types::flash_sale::FlashSale,
     worldstate_model::deserialize_mongo_date,
 };
 

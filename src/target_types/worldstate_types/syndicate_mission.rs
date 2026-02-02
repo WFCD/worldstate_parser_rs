@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::{
-    target_types::{node::Node, worldstate::syndicate::SyndicateType},
+    target_types::{node::Node, worldstate_types::syndicate::SyndicateType},
     wfcd_data::bounty_rewards::DropItem,
 };
 

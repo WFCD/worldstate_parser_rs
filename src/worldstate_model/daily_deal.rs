@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with},
-    target_types::worldstate::daily_deal::DailyDeal,
+    target_types::worldstate_types::daily_deal::DailyDeal,
     worldstate_model::deserialize_mongo_date,
 };
 

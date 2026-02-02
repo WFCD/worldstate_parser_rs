@@ -96,7 +96,6 @@ pub mod resolve_with {
     define_resolvers! {
         LanguageItems;
         LanguageItemWithDesc;
-        SolNodes;
         LastSegment;
         RotationalReward;
         Hubs;

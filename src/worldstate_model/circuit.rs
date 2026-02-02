@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{Resolve, resolvable_string::ResolvableString, resolve_with},
-    target_types::worldstate::circuit::Circuit,
+    target_types::worldstate_types::circuit::Circuit,
 };
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

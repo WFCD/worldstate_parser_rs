@@ -6,6 +6,7 @@ use crate::manifest_entries::{
     manifest_relic_arcane::RelicArcane,
 };
 
+#[allow(unused)]
 #[derive(Debug)]
 pub struct PublicExportIndex {
     pub customs: String,

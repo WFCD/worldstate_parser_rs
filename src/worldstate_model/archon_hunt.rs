@@ -10,7 +10,7 @@ use crate::{
         resolve_with,
         sol_node::SolNode,
     },
-    target_types::worldstate::archon_hunt::{ArchonHunt, ArchonHuntMission},
+    target_types::worldstate_types::archon_hunt::{ArchonHunt, ArchonHuntMission},
     worldstate_model::{Id, WorldstateMissionType, deserialize_mongo_date},
 };
 

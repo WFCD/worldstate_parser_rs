@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, InternalPath, Resolve, resolve_with, sol_node::SolNode},
-    target_types::worldstate::{
+    target_types::worldstate_types::{
         alert::{Alert, AlertItems, AlertMissionInfo, AlertMissionReward},
         counted_item::CountedItem,
     },

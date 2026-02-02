@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     core::{ContextRef, Resolve, sol_node::SolNode},
-    target_types::worldstate::fissure::{Fissure, FissureTier},
+    target_types::worldstate_types::fissure::{Fissure, FissureTier},
     worldstate_model::{Id, deserialize_mongo_date},
 };
 

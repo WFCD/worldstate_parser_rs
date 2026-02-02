@@ -6,7 +6,7 @@ use crate::target_types::{
     faction::Faction,
     mission_type::MissionType,
     node::Node,
-    worldstate::counted_item::CountedItem,
+    worldstate_types::counted_item::CountedItem,
 };
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]

@@ -1,7 +1,11 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::target_types::{faction::Faction, node::Node, worldstate::counted_item::CountedItem};
+use crate::target_types::{
+    faction::Faction,
+    node::Node,
+    worldstate_types::counted_item::CountedItem,
+};
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "camelCase")]
