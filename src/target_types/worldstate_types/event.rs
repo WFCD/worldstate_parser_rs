@@ -1,10 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 use crate::target_types::language::Language;
 
-#[skip_serializing_none]
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, Clone, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Event {

@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
 
 use crate::target_types::{
     faction::Faction,
@@ -25,7 +24,6 @@ pub struct Alert {
     pub icon: Option<String>,
 }
 
-#[skip_serializing_none]
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct AlertMissionInfo {
