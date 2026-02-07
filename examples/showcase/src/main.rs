@@ -20,11 +20,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .text()
         .await?;
 
-    let provider = DefaultContextProvider(PathContext {
-        data_dir: Path::new("data/"),
-        drops_dir: Path::new("drops/"),
-        assets_dir: Path::new("assets/"),
-    });
+    let provider = DefaultContextProvider(
+        PathContext {
+            data_dir: Path::new("data/"),
+            drops_dir: Path::new("drops/"),
+            assets_dir: Path::new("assets/"),
+        },
+        &reqwest::Client::new(),
+    );
 
     let world_state = WorldState::from_str(&world_state_str, provider).await?;
 

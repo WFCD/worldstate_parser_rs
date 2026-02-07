@@ -89,14 +89,14 @@ async fn create_worldstate_data(
     })
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct DefaultContextProvider<'a>(pub PathContext<'a>);
+#[derive(Debug, Clone, Copy)]
+pub struct DefaultContextProvider<'a>(pub PathContext<'a>, pub &'a reqwest::Client);
 
 impl ContextProvider for DefaultContextProvider<'_> {
     type Err = DefaultContextProviderError;
 
     async fn get_ctx(&self) -> Result<Context, Self::Err> {
-        let exports = get_export(&self.0.assets_dir.join("crewBattleNodes.json")).await?;
+        let exports = get_export(&self.0.assets_dir.join("crewBattleNodes.json"), self.1).await?;
         let custom_maps = CustomMaps::new(&exports);
         let worldstate_data = create_worldstate_data(self.0).await?;
 
@@ -160,8 +160,13 @@ async fn get_from_cache_or_fetch<T: DeserializeOwned>(
     Ok(serde_json::from_str(&item_json)?)
 }
 
-async fn get_export(ctx: &Path) -> Result<Exports, DefaultContextProviderError> {
-    let file = get("https://origin.warframe.com/PublicExport/index_en.txt.lzma")
+async fn get_export(
+    ctx: &Path,
+    client: &reqwest::Client,
+) -> Result<Exports, DefaultContextProviderError> {
+    let file = client
+        .get("https://origin.warframe.com/PublicExport/index_en.txt.lzma")
+        .send()
         .await?
         .bytes()
         .await?
