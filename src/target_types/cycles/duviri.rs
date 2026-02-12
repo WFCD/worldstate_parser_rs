@@ -1,4 +1,4 @@
-use chrono::{DateTime, Duration, NaiveDate, Utc};
+use chrono::{DateTime, Duration, NaiveDate, Timelike, Utc};
 use derive_more::Display;
 use serde::{Deserialize, Serialize};
 
@@ -51,7 +51,7 @@ impl DuviriCycle {
         .and_utc();
 
     pub fn now() -> Self {
-        Self::at(Utc::now())
+        Self::at(Utc::now().with_nanosecond(0).unwrap())
     }
 
     pub fn at(time: DateTime<Utc>) -> Self {
