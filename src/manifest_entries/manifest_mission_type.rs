@@ -49,6 +49,8 @@ pub enum ManifestMissionType {
     Descendia = 43,
     /// The Missions from the Perita Rebellion
     Recall = 44,
+    #[serde(rename(serialize = "Follie's Hunt"))]
+    FolliesHunt = 45,
 
     // Manual Data Points for mapping in manual assets for CrewBattleNodes
     Orphix = 252,
@@ -98,6 +100,7 @@ impl Resolve<()> for ManifestMissionType {
             ManifestMissionType::FreeFlight => MissionType::FreeFlight,
             ManifestMissionType::Orphix => MissionType::Orphix,
             ManifestMissionType::Volatile => MissionType::Volatile,
+            ManifestMissionType::FolliesHunt => MissionType::FolliesHunt,
         }
     }
 }

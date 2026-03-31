@@ -29,7 +29,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         &reqwest::Client::new(),
     );
 
-    let world_state = WorldState::from_str(&world_state_str, provider).await?;
+    let world_state = WorldState::from_str(&world_state_str, provider)
+        .await
+        .unwrap();
 
     let world_state_parsed = serde_json::to_string_pretty(&world_state)?;
 

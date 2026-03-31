@@ -15,6 +15,7 @@ pub enum ManifestFaction {
     Scaldra = 8,
     Techrot = 9,
     Duviri = 10,
+    Tenno = 11,
 }
 
 impl Resolve<()> for ManifestFaction {
@@ -31,6 +32,7 @@ impl Resolve<()> for ManifestFaction {
             ManifestFaction::Scaldra => Faction::Scaldra,
             ManifestFaction::Techrot => Faction::Techrot,
             ManifestFaction::Duviri => Faction::Duviri,
+            ManifestFaction::Tenno => Faction::Tenno,
         }
     }
 }

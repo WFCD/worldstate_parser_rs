@@ -17,4 +17,6 @@ pub enum Faction {
 
     /// Not really a faction, but can occur as "Faction"
     Duviri,
+
+    Tenno,
 }

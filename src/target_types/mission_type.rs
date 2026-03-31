@@ -96,5 +96,8 @@ pub enum MissionType {
 
     Volatile,
 
+    #[serde(rename = "Follie's Hunt")]
+    FolliesHunt,
+
     Unknown,
 }
